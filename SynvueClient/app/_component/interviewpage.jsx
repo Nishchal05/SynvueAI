@@ -38,8 +38,7 @@ export default function InterviewRoom() {
 
   const startInterview = async () => {
     try {
-      socketRef.current = new WebSocket("ws://localhost:8080");
-
+      socketRef.current = new WebSocket("wss://synvueai.onrender.com");
       socketRef.current.onopen = () => {
         if (socketRef.current.readyState === WebSocket.OPEN && interviewdel) {
           socketRef.current.send(
