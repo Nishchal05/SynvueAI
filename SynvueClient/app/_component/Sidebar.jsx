@@ -12,6 +12,8 @@ import {
   FaSignInAlt,
   FaUserPlus,
 } from "react-icons/fa";
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 import {
     SignInButton,
     SignUpButton,
@@ -22,6 +24,7 @@ import {
   } from '@clerk/nextjs';  
 import { useRouter } from "next/navigation";
 import { DataContext } from "../DataProvider";
+import { Contact } from "lucide-react";
 const Sidebar = () => {
   const { view, setView } = useContext(DataContext);
   const router=useRouter();
@@ -63,14 +66,14 @@ const Sidebar = () => {
               href="/profile"
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
-              <FaUser className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text" />
+            <HandshakeIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               Contact Us
             </Link>
             <Link
               href="/profile"
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
-              <FaUser className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text" />
+             <FeedbackIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               FeedBack
             </Link>
           </nav>
