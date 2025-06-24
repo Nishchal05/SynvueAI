@@ -1,22 +1,21 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
-import { createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// ✅ Only allow public access to sign-in, sign-up, and your AI modal
+// Define which routes are public (do NOT require authentication)
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
-  '/api/ai_modal' // 👈 This makes your AI route public
+  '/api/ai_modal', // 👈 make this public if you don't want auth errors here
 ]);
 
-export default clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request)) {
-    await auth().protect();
+export default clerkMiddleware((auth, req) => {
+  if (!isPublicRoute(req)) {
+    // This protects the route and enforces auth
+    auth().protect();
   }
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and static files
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     '/(api|trpc)(.*)',
   ],
