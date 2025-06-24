@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import User from '@/app/modal/usermodal'
 import dbconnect from "@/app/DBConnection";
+
 import { v4 as uuidv4 } from 'uuid';
 export async function POST(req) {
   try {
