@@ -24,7 +24,6 @@ import {
   } from '@clerk/nextjs';  
 import { useRouter } from "next/navigation";
 import { DataContext } from "../DataProvider";
-import { Contact } from "lucide-react";
 const Sidebar = () => {
   const { view, setView } = useContext(DataContext);
   const router=useRouter();
@@ -56,21 +55,21 @@ const Sidebar = () => {
               Create Interview
             </div>
             <Link
-              href="/credits"
+              href="/Billing"
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
               <FaCreditCard className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text" />
-              Add Credits
+              Billing
             </Link>
             <Link
-              href="/profile"
+              href="/Contact"
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
             <HandshakeIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               Contact Us
             </Link>
             <Link
-              href="/profile"
+              href="/Feedback"
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
              <FeedbackIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>

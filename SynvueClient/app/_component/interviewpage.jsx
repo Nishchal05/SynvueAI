@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
+import Sidebar from "./Sidebar";
 
 export default function InterviewRoom() {
   const [started, setStarted] = useState(false);
@@ -164,7 +165,9 @@ export default function InterviewRoom() {
   };
 
   return (
-    <div className="min-h-screen bg-blue-50 text-blue-900 font-sans flex flex-col items-center justify-center px-4 py-10">
+   <div className="flex min-h-screen bg-gray-100">
+   <Sidebar/>
+     <div className="min-h-screen bg-blue-50 text-blue-900 font-sans flex flex-col items-center justify-center px-4 py-10">
       {!started ? (
         <div className="bg-cyan-950 animate-pulse shadow-xl flex flex-col items-center rounded-xl w-full max-w-3xl p-10 text-center space-y-6 text-white border border-blue-500">
           <div className="text-3xl font-bold flex flex-col items-center gap-3">
@@ -207,7 +210,7 @@ export default function InterviewRoom() {
             <div className="bg-cyan-950 rounded-xl shadow-md w-full max-w-sm aspect-square flex flex-col items-center justify-center">
               <div className="w-24 h-24 rounded-full border-4 border-blue-200 overflow-hidden">
                 <img
-                  src="/intervueLogo.png"
+                  src="/IntervueLogo.png"
                   alt="AI"
                   className="object-cover w-full h-full"
                 />
@@ -248,5 +251,6 @@ export default function InterviewRoom() {
         </div>
       )}
     </div>
+   </div>
   );
 }
