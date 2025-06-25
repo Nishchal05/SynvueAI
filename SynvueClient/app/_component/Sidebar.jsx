@@ -49,7 +49,7 @@ const Sidebar = () => {
 
             <div
               onClick={()=>{!UserButton ? router.push('/CreateInterView') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
-              className="flex items-center gap-3 hover:text-indigo-600 transition"
+              className="flex items-center gap-3 hover:text-indigo-600 transition cursor-pointer"
             >
               <FaMicrophoneAlt className="text-xl bg-gradient-to-r text-indigo-700  bg-clip-text" />
               Create Interview

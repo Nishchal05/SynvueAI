@@ -19,7 +19,7 @@ export default function ContactPage() {
   return (
     <div className="flex min-h-screen bg-blue-50">
       <Sidebar />
-      <main className="flex flex-col items-center justify-center flex-1 px-4 py-10">
+      <main className="flex flex-col items-center justify-center flex-1 px-4 py-10 md:ml-40 md:mt-14">
         <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 transition-all duration-300">
           {/* Logo & Heading */}
           <div className="text-center mb-10">

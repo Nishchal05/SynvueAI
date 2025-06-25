@@ -20,7 +20,7 @@ export default function FeedbackForm() {
   return (
     <div className="flex min-h-screen bg-blue-50">
       <Sidebar />
-      <main className="flex flex-col items-center justify-center w-full px-4 py-12">
+      <main className="flex flex-col items-center justify-center w-full px-4 py-12 md:mt-8">
         <div className="w-full max-w-2xl bg-white p-8 md:p-12 rounded-3xl shadow-2xl">
           <h2 className="text-3xl md:text-4xl font-extrabold text-blue-700 text-center mb-8">
             Feedback Form

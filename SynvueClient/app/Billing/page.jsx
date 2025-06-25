@@ -35,7 +35,7 @@ export default function BuyCredits() {
   return (
     <div className="flex min-h-screen bg-blue-50 text-blue-900">
       <Sidebar />
-      <div className="flex-1 px-4 sm:px-8 py-10">
+      <div className="flex-1 px-4 sm:px-8 py-10 mt-11">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-extrabold text-center text-blue-700 mb-3">Buy Synvue Coins</h1>
           <p className="text-center text-lg mb-1">1 Coin = ₹4.5 = 1 Minute</p>
@@ -58,7 +58,7 @@ export default function BuyCredits() {
           </div>
 
           {/* Offers Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:ml-44">
             {offers.map((offer, idx) => (
               <div
                 key={idx}
