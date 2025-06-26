@@ -13,7 +13,6 @@ export async function POST(req) {
       console.log( jobPosition, description, duration, interviewType, useremail, username)
       return NextResponse.json({ error: "Missing input fields" }, { status: 400 });
     }
-    console.log(process.env.OPENROUTE_API)
     if (!process.env.OPENROUTE_API) throw new Error("Missing OPENROUTE_API env var");
     const prompt = process.env.NEXT_PUBLIC_PROMPT;
     if (!prompt) {
