@@ -6,7 +6,7 @@ import { FaPlay } from "react-icons/fa";
 
 const Home = () => {
   return (
-    <main className="relative min-h-screen bg-gradient-to-br from-white to-blue-200 p-6 md:p-12 overflow-hidden">
+    <main className="relative w-full h-screen bg-gradient-to-br from-white to-blue-200 p-6 md:p-12 overflow-hidden">
 
       {/* Background Animated Star */}
       <img
@@ -16,7 +16,7 @@ const Home = () => {
       />
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col md:flex-row-reverse items-center justify-center min-h-[80vh]">
+      <div className=" relative z-10 flex flex-col md:flex-row-reverse items-center justify-center min-h-[80vh]">
         {/* Logo */}
         <div className="flex justify-center md:justify-end w-full md:w-1/2 animate-pulse md:mr-24">
           <img

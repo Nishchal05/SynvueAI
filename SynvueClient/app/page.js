@@ -10,7 +10,7 @@ const user = await currentUser();
       {!user ? (
         <>
           <Sidebar />
-          <main className="w-full p-4 md:ml-64 transition-all duration-300">
+          <main className="w-full md:ml-60 transition-all duration-300">
             <Home />
           </main>
         </>
