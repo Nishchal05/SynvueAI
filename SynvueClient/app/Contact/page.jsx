@@ -1,53 +1,88 @@
 "use client";
+
 import { useState } from "react";
 import { FaLinkedin, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import Sidebar from "../_component/Sidebar";
+import { toast } from "sonner";
+import { FaMailBulk, FaSpinner } from "react-icons/fa";
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-
+  const [form, setForm] = useState({
+    name: "",
+    mail: "",
+    message: "",
+    request: "Contact",
+  });
+  const [loading, setloading]=useState(false);
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Message sent!");
-    setForm({ name: "", email: "", message: "" });
+    try {
+      setloading(true);
+      const response = await fetch("/api/mailer", {
+        method: "POST",
+        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      if (result.message === "We will contact you soon!!") {
+        toast.success("✅ Message sent successfully!");
+      } else {
+        toast.error("❌ Something went wrong!");
+      }
+      setForm({ name: "", mail: "", message: "", request: "Contact" });
+    } catch (error) {
+      toast.error(`❌ ${error.message || "Submission failed"}`);
+    }finally{
+      setloading(false);
+    }
   };
-
   return (
-    <div className="flex min-h-screen bg-blue-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <Sidebar />
-      <main className="flex flex-col items-center justify-center flex-1 px-4 py-10 md:ml-40 md:mt-14">
-        <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 transition-all duration-300">
-          {/* Logo & Heading */}
+      <main className="flex flex-col items-center justify-center flex-1 py-10 md:ml-64">
+        <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 animate-fade-in">
+          {/* Heading */}
           <div className="text-center mb-10">
-            <img src="/IntervueLogo.png" alt="SynvueAI Logo" className="mx-auto h-20 mb-4" />
-            <h1 className="text-3xl md:text-4xl font-extrabold text-blue-700">
+            <img
+              src="/IntervueLogo.png"
+              alt="SynvueAI Logo"
+              className="mx-auto h-20 mb-4"
+            />
+            <h1 className="text-4xl font-extrabold text-blue-700">
               Contact SynvueAI
             </h1>
-            <p className="text-gray-600 mt-2 text-sm md:text-base">We’d love to hear from you!</p>
+            <p className="text-gray-600 mt-2 text-base">
+              We’d love to hear from you!
+            </p>
           </div>
 
-          {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6 flex flex-col justify-center items-center"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
               <input
                 type="text"
                 name="name"
                 placeholder="Your Name"
-                className="border border-blue-300 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="bg-gray-100 p-4 rounded-xl border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.name}
                 onChange={handleChange}
                 required
               />
               <input
                 type="email"
-                name="email"
+                name="mail"
                 placeholder="Your Email"
-                className="border border-blue-300 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                value={form.email}
+                className="bg-gray-100 p-4 rounded-xl border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={form.mail}
                 onChange={handleChange}
                 required
               />
@@ -56,31 +91,54 @@ export default function ContactPage() {
               name="message"
               rows={5}
               placeholder="Your Message"
-              className="w-full border border-blue-300 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full bg-gray-100 p-4 rounded-xl border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={form.message}
               onChange={handleChange}
               required
             ></textarea>
+
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl w-full md:w-1/2 mx-auto transition"
+              className=" flex justify-center items-center w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-3 rounded-xl w-full md:w-1/2 mx-auto transition-all duration-300"
             >
-              Send Message
+              {loading ? <FaSpinner className=" animate-spin"/>:<h1>Send Message</h1>}
             </button>
           </form>
-
           {/* Social Icons */}
           <div className="mt-10 text-center">
-            <h2 className="text-lg font-semibold text-blue-600 mb-2">Follow us on</h2>
+            <h2 className="text-lg font-semibold text-blue-600 mb-2">
+              Follow us
+            </h2>
             <div className="flex justify-center space-x-6 text-2xl text-blue-600">
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition">
+              <a
+                href="www.linkedin.com/in/nishchal-sundan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-800 transition"
+              >
                 <FaLinkedin />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-pink-600 transition">
+              <a
+                href="https://www.instagram.com/nishchal_sundan20_04/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-pink-600 transition"
+              >
                 <FaInstagram />
               </a>
-              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-black transition">
+              <a
+                href="https://x.com/Nishchal_Sundan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black transition"
+              >
                 <FaXTwitter />
+              </a>
+              <a
+                href="mailto:synvue@gmail.com"
+                className="hover:text-red-600 transition"
+              >
+                <FaMailBulk />
               </a>
             </div>
           </div>

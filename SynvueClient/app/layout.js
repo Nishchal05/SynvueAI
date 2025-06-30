@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import 'animate.css';
-
+import { Toaster } from "@/components/ui/sonner"
 import {
   ClerkProvider
 } from '@clerk/nextjs'
@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
         
       <Navbar/>
         {children}</DataProvider>
-      
+        <Toaster />
       </body>
     </html></ClerkProvider>
     

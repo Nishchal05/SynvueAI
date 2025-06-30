@@ -2,21 +2,40 @@
 
 import { useState } from "react";
 import Sidebar from "../_component/Sidebar";
-
+import { FaSpinner } from "react-icons/fa6";
+import { toast } from "sonner";
 export default function FeedbackForm() {
-  const [formData, setFormData] = useState({ name: "", email: "", feedback: "" });
+  const [formData, setFormData] = useState({ name: "", mail: "", message: "", request: "Feedback"});
   const [submitted, setSubmitted] = useState(false);
-
+  const [loading,setloading]=useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Feedback:", formData);
-    setSubmitted(true);
-  };
-
+    setloading(true);
+    try {
+      const response = await fetch("/api/mailer", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      if (result.message === "We will contact you soon!!") {
+        setSubmitted(true);
+        toast.success("✅ Message sent successfully!");
+        setFormData({ name: "", mail: "", message: "", request: "Feedback" });
+      } else {
+        toast.error("❌ Something went wrong!");
+      }
+    } catch (error) {
+      toast.error(`❌ ${error.message || "Submission failed"}`);
+    } finally {
+      setloading(false);
+    }
+  };  
   return (
     <div className="flex min-h-screen bg-blue-50">
       <Sidebar />
@@ -54,8 +73,8 @@ export default function FeedbackForm() {
                 </label>
                 <input
                   type="email"
-                  name="email"
-                  value={formData.email}
+                  name="mail"
+                  value={formData.mail}
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -68,8 +87,8 @@ export default function FeedbackForm() {
                   Your Feedback
                 </label>
                 <textarea
-                  name="feedback"
-                  value={formData.feedback}
+                  name="message"
+                  value={formData.message}
                   onChange={handleChange}
                   required
                   rows="5"
@@ -80,9 +99,9 @@ export default function FeedbackForm() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all"
+                className="flex justify-center items-center w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all"
               >
-                Submit Feedback
+              {loading ? <FaSpinner className=" animate-spin"/>:<h1>Submit Feedback</h1>}
               </button>
             </form>
           )}

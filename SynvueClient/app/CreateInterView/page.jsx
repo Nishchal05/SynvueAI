@@ -46,7 +46,6 @@ const Page = () => {
           "Content-Type": "application/json",
         },
       });
-
       const result = await response.json();
       if (result) {
         console.log(result);
