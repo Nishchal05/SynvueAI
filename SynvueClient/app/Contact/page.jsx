@@ -1,19 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaLinkedin, FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { FaMailBulk, FaSpinner } from "react-icons/fa";
 import Sidebar from "../_component/Sidebar";
 import { toast } from "sonner";
-import { FaMailBulk, FaSpinner } from "react-icons/fa";
+import { useUser } from "@clerk/nextjs";
 
 export default function ContactPage() {
+  const { user } = useUser(); // Correctly destructure
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     mail: "",
     message: "",
     request: "Contact",
   });
-  const [loading, setloading]=useState(false);
+
+  // Populate form with user info when loaded
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        name: user.firstName || "",
+        mail: user.primaryEmailAddress?.emailAddress || "",
+      }));
+    }
+  }, [user]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -21,7 +36,7 @@ export default function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setloading(true);
+      setLoading(true);
       const response = await fetch("/api/mailer", {
         method: "POST",
         body: JSON.stringify(form),
@@ -29,19 +44,21 @@ export default function ContactPage() {
           "Content-Type": "application/json",
         },
       });
+
       const result = await response.json();
       if (result.message === "We will contact you soon!!") {
         toast.success("✅ Message sent successfully!");
+        setForm({ name: "", mail: "", message: "", request: "Contact" });
       } else {
-        toast.error("❌ Something went wrong!");
+        toast.error(result?.error || "❌ Something went wrong!");
       }
-      setForm({ name: "", mail: "", message: "", request: "Contact" });
     } catch (error) {
       toast.error(`❌ ${error.message || "Submission failed"}`);
-    }finally{
-      setloading(false);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <Sidebar />
@@ -99,11 +116,19 @@ export default function ContactPage() {
 
             <button
               type="submit"
-              className=" flex justify-center items-center w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-6 py-3 rounded-xl w-full md:w-1/2 mx-auto transition-all duration-300"
+              disabled={loading}
+              className={`flex justify-center items-center w-full bg-gradient-to-r from-blue-600 to-indigo-600 ${
+                loading ? "opacity-60 cursor-not-allowed" : "hover:from-blue-700 hover:to-indigo-700"
+              } text-white font-semibold px-6 py-3 rounded-xl w-full md:w-1/2 mx-auto transition-all duration-300`}
             >
-              {loading ? <FaSpinner className=" animate-spin"/>:<h1>Send Message</h1>}
+              {loading ? (
+                <FaSpinner className="animate-spin" />
+              ) : (
+                <span>Send Message</span>
+              )}
             </button>
           </form>
+
           {/* Social Icons */}
           <div className="mt-10 text-center">
             <h2 className="text-lg font-semibold text-blue-600 mb-2">
@@ -111,10 +136,12 @@ export default function ContactPage() {
             </h2>
             <div className="flex justify-center space-x-6 text-2xl text-blue-600">
               <a
-                href="www.linkedin.com/in/nishchal-sundan"
+                href="https://www.linkedin.com/in/nishchal-sundan"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-blue-800 transition"
+                aria-label="LinkedIn"
+                title="LinkedIn"
               >
                 <FaLinkedin />
               </a>
@@ -123,6 +150,8 @@ export default function ContactPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-pink-600 transition"
+                aria-label="Instagram"
+                title="Instagram"
               >
                 <FaInstagram />
               </a>
@@ -131,12 +160,16 @@ export default function ContactPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-black transition"
+                aria-label="Twitter"
+                title="Twitter"
               >
                 <FaXTwitter />
               </a>
               <a
                 href="mailto:synvue@gmail.com"
                 className="hover:text-red-600 transition"
+                aria-label="Email"
+                title="Email"
               >
                 <FaMailBulk />
               </a>

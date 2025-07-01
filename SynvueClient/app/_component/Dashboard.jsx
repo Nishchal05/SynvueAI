@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React,{useEffect} from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import { FaMicrophoneAlt, FaPhoneAlt, FaHistory } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
@@ -8,7 +8,11 @@ import { useRouter } from 'next/navigation';
 const Dashboard = () => {
   const { user } = useUser();
   const router = useRouter();
-
+useEffect(() => {
+    fetch("http://localhost:8080/api/ping") 
+      .then(() => console.log("Backend pinged successfully"))
+      .catch((err) => console.log("Warm-up failed:", err));
+}, []);
   return (
     <div className="h-100vh w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 sm:p-4 mt-52 md:mt-[-100px]">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8">

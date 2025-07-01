@@ -4,16 +4,38 @@ import { useState } from "react";
 import Sidebar from "../_component/Sidebar";
 import { FaSpinner } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
+
 export default function FeedbackForm() {
-  const [formData, setFormData] = useState({ name: "", mail: "", message: "", request: "Feedback"});
+  const { user } = useUser();
   const [submitted, setSubmitted] = useState(false);
-  const [loading,setloading]=useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    mail: "",
+    message: "",
+    request: "Feedback",
+  });
+
+  // Prefill user data
+  useState(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.firstName || "",
+        mail: user.primaryEmailAddress?.emailAddress || "",
+      }));
+    }
+  });
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setloading(true);
+    setLoading(true);
     try {
       const response = await fetch("/api/mailer", {
         method: "POST",
@@ -33,9 +55,10 @@ export default function FeedbackForm() {
     } catch (error) {
       toast.error(`❌ ${error.message || "Submission failed"}`);
     } finally {
-      setloading(false);
+      setLoading(false);
     }
-  };  
+  };
+
   return (
     <div className="flex min-h-screen bg-blue-50">
       <Sidebar />
@@ -53,7 +76,10 @@ export default function FeedbackForm() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name */}
               <div>
-                <label htmlFor="name" className="block text-blue-700 font-medium mb-1">
+                <label
+                  htmlFor="name"
+                  className="block text-blue-700 font-medium mb-1"
+                >
                   Name
                 </label>
                 <input
@@ -68,7 +94,10 @@ export default function FeedbackForm() {
 
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-blue-700 font-medium mb-1">
+                <label
+                  htmlFor="mail"
+                  className="block text-blue-700 font-medium mb-1"
+                >
                   Email
                 </label>
                 <input
@@ -81,9 +110,12 @@ export default function FeedbackForm() {
                 />
               </div>
 
-              {/* Feedback */}
+              {/* Feedback Message */}
               <div>
-                <label htmlFor="feedback" className="block text-blue-700 font-medium mb-1">
+                <label
+                  htmlFor="message"
+                  className="block text-blue-700 font-medium mb-1"
+                >
                   Your Feedback
                 </label>
                 <textarea
@@ -96,12 +128,21 @@ export default function FeedbackForm() {
                 ></textarea>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit */}
               <button
                 type="submit"
-                className="flex justify-center items-center w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all"
+                disabled={loading}
+                className={`flex justify-center items-center w-full bg-blue-600 ${
+                  loading
+                    ? "opacity-60 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                } text-white font-semibold py-3 rounded-xl transition-all`}
               >
-              {loading ? <FaSpinner className=" animate-spin"/>:<h1>Submit Feedback</h1>}
+                {loading ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  <span>Submit Feedback</span>
+                )}
               </button>
             </form>
           )}

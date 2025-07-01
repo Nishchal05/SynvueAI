@@ -14,6 +14,7 @@ export default function InterviewRoom() {
   const recognitionRef = useRef(null);
   const convertTextRef = useRef(null);
   const socketRef = useRef(null);
+  const isSpeakingRef = useRef(false);
   const params = useSearchParams();
   const interviewId = params.get("id");
   const email = params.get("mail");
@@ -22,75 +23,87 @@ export default function InterviewRoom() {
   const speakText = (text, onEndCallback) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
-  
+
+    if (isSpeakingRef.current) return;
+    isSpeakingRef.current = true;
+
     synth.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = "en-US";
     utter.rate = 1;
     utter.pitch = 1;
-  
+
     utter.onend = () => {
-      console.log("✅ TTS finished");
-      setTimeout(() => {
-        if (onEndCallback) onEndCallback(); // Only callback here
-      }, 100);
+      isSpeakingRef.current = false;
+      setTimeout(() => onEndCallback?.(), 100);
     };
-  
+
     utter.onerror = (e) => {
       console.error("❌ TTS error", e.error);
-      setTimeout(() => {
-        if (onEndCallback) onEndCallback();
-      }, 100);
+      isSpeakingRef.current = false;
+      setTimeout(() => onEndCallback?.(), 100);
     };
-  
-    synth.speak(utter);
+
+    setTimeout(() => synth.speak(utter), 100);
   };
-  
+
+  const connectWebSocket = (retryCount = 0) => {
+    if (retryCount > 3) {
+      console.error("❌ WebSocket failed after 3 retries");
+      return;
+    }
+
+    const socket = new WebSocket("wss://synvueai.onrender.com");
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      console.log("✅ WebSocket connected");
+      if (interviewdel) {
+        socket.send(JSON.stringify({
+          type: "init",
+          interviewDetails: interviewdel,
+        }));
+      }
+    };
+
+    socket.onerror = () => {
+      console.warn("⚠️ WebSocket error. Retrying...");
+      setTimeout(() => connectWebSocket(retryCount + 1), 1000 * (retryCount + 1));
+    };
+
+    socket.onmessage = (event) => {
+      const message = event.data;
+      if (message.startsWith("🤖 AI: ")) {
+        const aiMessage = message.replace("🤖 AI: ", "").trim();
+
+        if (recognitionRef.current) {
+          recognitionRef.current.abort();
+        }
+
+        speakText(aiMessage, () => {
+          try {
+            if (socketRef.current?.readyState === WebSocket.OPEN) {
+              recognitionRef.current?.start();
+              console.log("🎙️ Mic restarted after AI");
+            }
+          } catch (err) {
+            console.error("❌ Error restarting mic:", err);
+          }
+        });
+      }
+    };
+  };
+
   const startInterview = async () => {
     try {
-      socketRef.current = new WebSocket("wss://synvueai.onrender.com");
-
-      socketRef.current.onopen = () => {
-        if (socketRef.current.readyState === WebSocket.OPEN && interviewdel) {
-          console.log("📤 Sending INIT to server", interviewdel);
-          socketRef.current.send(
-            JSON.stringify({
-              type: "init",
-              interviewDetails: interviewdel,
-            })
-          );
-        }
-      };
-
-      socketRef.current.onmessage = (event) => {
-        const message = event.data;
-
-        if (message.startsWith("🤖 AI: ")) {
-          const aiMessage = message.replace("🤖 AI: ", "").trim();
-
-          if (recognitionRef.current) {
-            recognitionRef.current.abort();
-          }
-
-          speakText(aiMessage, () => {
-            try {
-              console.log("mic started");
-              recognitionRef.current?.start();
-              console.log("🎙️ Mic started after AI spoke");
-            } catch (err) {
-              console.error("❌ Error restarting mic:", err);
-            }
-          });
-          
-          
-        }
-      };
+      if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
+        connectWebSocket();
+      }
 
       window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
       const recognition = new window.SpeechRecognition();
       recognitionRef.current = recognition;
-      console.log(recognitionRef.current)
+
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = "en-US";
@@ -114,7 +127,7 @@ export default function InterviewRoom() {
             })
           );
         }
-        // Reset UI to "Listening..." after sending
+
         setTimeout(() => {
           setTranscript("");
           if (convertTextRef.current) {
@@ -139,12 +152,8 @@ export default function InterviewRoom() {
   };
 
   const stopInterview = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-    if (socketRef.current) {
-      socketRef.current.close();
-    }
+    recognitionRef.current?.stop();
+    socketRef.current?.close();
     setStarted(false);
   };
 
@@ -178,6 +187,12 @@ export default function InterviewRoom() {
       interviewData();
     }
   }, [interviewId, email]);
+
+  useEffect(() => {
+    if (interviewdel) {
+      connectWebSocket();
+    }
+  }, [interviewdel]);
 
   const formatTime = (s) => {
     const mins = String(Math.floor(s / 60)).padStart(2, "0");
@@ -243,10 +258,10 @@ export default function InterviewRoom() {
 
               <div className="bg-cyan-950 rounded-xl shadow-md w-full max-w-sm aspect-square flex flex-col items-center justify-center">
                 <div className="w-24 h-24 rounded-full bg-blue-600 text-white text-2xl font-bold flex items-center justify-center">
-                  T
+                  AI
                 </div>
                 <div className="mt-2 text-sm font-medium text-gray-700">
-                  Tubeguruji
+                  SynvueAI
                 </div>
               </div>
             </div>
