@@ -1,18 +1,7 @@
 const assistantOptions = {
   name: "AI Recruiter",
-  firstMessage:
-    "Hi {{userName}}, how are you? Ready for your interview on {{jobPosition}}?",
 
-  transcriber: {
-    provider: "deepgram",
-    model: "nova-2",
-    language: "en-US",
-  },
-
-  voice: {
-  provider: "playht",
-  voiceId: "grace", // or ethan / jenny / davis
-},
+  // Only the model config is currently being used
   model: {
     provider: "openrouter",
     model: "meta-llama/llama-3.3-70b-instruct:free",
