@@ -91,16 +91,26 @@ wss.on("connection", (ws) => {
         const reply = completion.choices[0].message.content;
         chatHistory.push({ role: "assistant", content: reply });
 
-        let fullReply = `💬 ${reply.trim()}\n\n`;
+        let fullReply = `💬 ${reply.trim()}`;
+ws.send("🤖 AI: " + fullReply);
 
-        questionIndex++;
-        if (questionIndex < questionList.length) {
-          fullReply += `👉 Next question: ${questionList[questionIndex]?.question}`;
-        } else {
-          fullReply += `✅ That concludes the interview. Thank you, ${userName}!`;
-        }
+// Increment question index only after sending the answer
+questionIndex++;
 
-        ws.send("🤖 AI: " + fullReply);
+// Wait until the next transcript before sending the next question
+if (questionIndex < questionList.length) {
+  setTimeout(() => {
+    const nextQuestion = questionList[questionIndex]?.question;
+    ws.send("🤖 AI: " + nextQuestion);
+    chatHistory.push({ role: "assistant", content: nextQuestion });
+  }, 500); // You can adjust delay if needed
+} else {
+  setTimeout(() => {
+    const endMessage = `✅ That concludes the interview. Thank you, ${userName}!`;
+    ws.send("🤖 AI: " + endMessage);
+  }, 500);
+}
+
       }
     } catch (error) {
       console.error("❌ AI Error:", error.message);
