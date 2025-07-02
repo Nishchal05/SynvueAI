@@ -1,15 +1,33 @@
 'use client';
 
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import { FaMicrophoneAlt, FaPhoneAlt, FaHistory } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-
 const Dashboard = () => {
   const { user } = useUser();
   const router = useRouter();
+  const [member,setmember]=useState({});
+  const handleuser=async()=>{
+    const response=await fetch('/api/createuser',{
+      method:'POST',
+      body:JSON.stringify({user}),
+      headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    const result=await response.json();
+    console.log(result)
+    setmember(result?.user)
+  }
+  useEffect(() => {
+    if (user) {
+      handleuser();
+    }
+  }, [user]);
+  
 useEffect(() => {
-    fetch("http://localhost:8080/api/ping") 
+    fetch("https://synvueai.onrender.com/api/ping") 
       .then(() => console.log("Backend pinged successfully"))
       .catch((err) => console.log("Warm-up failed:", err));
 }, []);
@@ -26,7 +44,6 @@ useEffect(() => {
         </div>
         <UserButton />
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">

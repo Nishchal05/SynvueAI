@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState, useContext } from "react";
+import React, { useState,useContext,useEffect} from "react";
 import Link from "next/link";
 import {
   FaBars,
@@ -20,13 +19,33 @@ import {
     SignedIn,
     SignedOut,
     SignOutButton,
-    UserButton
+    UserButton,
+    useUser
   } from '@clerk/nextjs';  
 import { useRouter } from "next/navigation";
 import { DataContext } from "../DataProvider";
 const Sidebar = () => {
   const { view, setView } = useContext(DataContext);
+  const [minutes,setminutes]=useState(7);
+  const user=useUser();
   const router=useRouter();
+  const userdata = async () => {
+    if (!user?.user?.primaryEmailAddress?.emailAddress) return;
+    try {
+      const response = await fetch(`/api/createuser?email=${user.user.primaryEmailAddress.emailAddress}`);
+      const result = await response.json();
+      setminutes(result?.user?.minutes || 7);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  
+  useEffect(() => {
+    if (user?.user?.primaryEmailAddress?.emailAddress) {
+      userdata();
+    }
+  }, [user]);
+  
   return (
     <>
       <aside
@@ -46,7 +65,6 @@ const Sidebar = () => {
               <FaHome className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text" />
               Home
             </Link>
-
             <div
               onClick={()=>{!UserButton ? router.push('/CreateInterView') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
               className="flex items-center gap-3 hover:text-indigo-600 transition cursor-pointer"
@@ -81,7 +99,7 @@ const Sidebar = () => {
         {/* Credits & Auth */}
         <div className="text-gray-700">
           <div className="mb-4">
-            🎯 <span className="font-semibold">Credits:</span> 10
+            🎯 <span className="font-semibold">Minutes left:</span> {minutes}
           </div>
           <div className="flex items-center gap-3">
           <SignedOut>

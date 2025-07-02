@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import Sidebar from "./Sidebar";
-
+import { useRouter } from "next/navigation";
 export default function InterviewRoom() {
   const [started, setStarted] = useState(false);
   const [seconds, setSeconds] = useState(0);
@@ -19,7 +19,7 @@ export default function InterviewRoom() {
   const interviewId = params.get("id");
   const email = params.get("mail");
   const [interviewdel, setInterviewdel] = useState(null);
-
+  const router = useRouter();
   const speakText = (text, onEndCallback) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
@@ -96,29 +96,69 @@ export default function InterviewRoom() {
 
   const startInterview = async () => {
     try {
-      if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-        connectWebSocket();
+      if (!interviewdel) {
+        console.warn("No interview details available.");
+        return;
       }
-
-      window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  
+      const socket = new WebSocket("wss://synvueai.onrender.com");
+      socketRef.current = socket;
+  
+      socket.onopen = () => {
+        console.log("✅ WebSocket connected");
+  
+        socket.send(JSON.stringify({
+          type: "init",
+          interviewDetails: interviewdel,
+        }));
+      };
+  
+      socket.onmessage = (event) => {
+        const message = event.data;
+        if (message.startsWith("🤖 AI: ")) {
+          const aiMessage = message.replace("🤖 AI: ", "").trim();
+  
+          if (recognitionRef.current) {
+            recognitionRef.current.abort();
+          }
+  
+          speakText(aiMessage, () => {
+            try {
+              if (socketRef.current?.readyState === WebSocket.OPEN) {
+                recognitionRef.current?.start();
+                console.log("🎙️ Mic restarted after AI");
+              }
+            } catch (err) {
+              console.error("❌ Error restarting mic:", err);
+            }
+          });
+        }
+      };
+  
+      socket.onerror = () => {
+        console.warn("⚠️ WebSocket error.");
+      };
+  
+      window.SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+  
       const recognition = new window.SpeechRecognition();
       recognitionRef.current = recognition;
-
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = "en-US";
-
+  
       recognition.onresult = (e) => {
         const transcript = Array.from(e.results)
           .map((result) => result[0].transcript)
           .join(" ")
           .trim();
-
+  
         setTranscript(transcript);
         if (convertTextRef.current) {
           convertTextRef.current.innerText = transcript;
         }
-
+  
         if (socketRef.current?.readyState === WebSocket.OPEN) {
           socketRef.current.send(
             JSON.stringify({
@@ -127,7 +167,7 @@ export default function InterviewRoom() {
             })
           );
         }
-
+  
         setTimeout(() => {
           setTranscript("");
           if (convertTextRef.current) {
@@ -135,26 +175,43 @@ export default function InterviewRoom() {
           }
         }, 1000);
       };
-
+  
       recognition.onerror = (e) => {
         console.error("🎤 Recognition error:", e.error);
       };
-
+  
       recognition.onend = () => {
         console.log("🛑 Mic ended. Will restart after TTS.");
       };
-
+  
       recognition.start();
       setStarted(true);
     } catch (error) {
       console.error("Speech recognition setup failed:", error);
     }
   };
+  
 
   const stopInterview = () => {
-    recognitionRef.current?.stop();
-    socketRef.current?.close();
-    setStarted(false);
+    try {
+      // Stop mic
+      recognitionRef.current?.stop();
+  
+      // Close socket
+      socketRef.current?.close();
+  
+      // Stop AI speaking
+      window.speechSynthesis.cancel();
+      isSpeakingRef.current = false;
+  
+      // Set state to inactive
+      setStarted(false);
+  
+      // Navigate to dashboard
+      router.push("/dashboard");
+    } catch (err) {
+      console.error("Error stopping interview:", err);
+    }
   };
 
   useEffect(() => {
@@ -188,11 +245,6 @@ export default function InterviewRoom() {
     }
   }, [interviewId, email]);
 
-  useEffect(() => {
-    if (interviewdel) {
-      connectWebSocket();
-    }
-  }, [interviewdel]);
 
   const formatTime = (s) => {
     const mins = String(Math.floor(s / 60)).padStart(2, "0");
