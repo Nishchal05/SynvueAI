@@ -17,6 +17,7 @@ export async function GET(req) {
     const interview = interviewDataObj?.get(id);
     return NextResponse.json({
       name: result.name,
+      minutes:result.minutes,
       interviewdetails: interview || {},
     });
   } catch (error) {

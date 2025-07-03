@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import Sidebar from "./Sidebar";
 import { useRouter } from "next/navigation";
+import { DataContext } from "../DataProvider";
 export default function InterviewRoom() {
   const [started, setStarted] = useState(false);
   const [seconds, setSeconds] = useState(0);
@@ -20,6 +21,7 @@ export default function InterviewRoom() {
   const email = params.get("mail");
   const [interviewdel, setInterviewdel] = useState(null);
   const router = useRouter();
+  const {minutes,setminutes,userprofile}=useContext(DataContext);
   const speakText = (text, onEndCallback) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
@@ -194,26 +196,25 @@ export default function InterviewRoom() {
 
   const stopInterview = () => {
     try {
-      // Stop mic
       recognitionRef.current?.stop();
-  
-      // Close socket
       socketRef.current?.close();
-  
-      // Stop AI speaking
       window.speechSynthesis.cancel();
       isSpeakingRef.current = false;
   
-      // Set state to inactive
-      setStarted(false);
+      const timetaken = Math.ceil(seconds / 60);
+      setminutes(Math.max(0, minutes - timetaken));
   
-      // Navigate to dashboard
-      router.push("/dashboard");
+      setStarted(false);
+      if(userprofile?.interviews?.
+        totalCreated==1){
+          router.push('/Feedback')
+        }else{
+          router.push('/')
+        }
     } catch (err) {
       console.error("Error stopping interview:", err);
     }
   };
-
   useEffect(() => {
     if (!started) return;
     const interval = setInterval(() => setSeconds((s) => s + 1), 1000);
@@ -227,6 +228,8 @@ export default function InterviewRoom() {
       );
       const result = await response.json();
       if (result?.interviewdetails) {
+        setminutes(result.minutes)
+        console.log(result)
         setInterviewDetails(result.interviewdetails);
         setInterviewdel(result);
       } else {

@@ -1,13 +1,15 @@
 'use client';
 
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState,useContext} from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import { FaMicrophoneAlt, FaPhoneAlt, FaHistory } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import { DataContext } from '../DataProvider';
 const Dashboard = () => {
   const { user } = useUser();
   const router = useRouter();
   const [member,setmember]=useState({});
+  const {minutes,setminutes}=useContext(DataContext)
   const handleuser=async()=>{
     const response=await fetch('/api/createuser',{
       method:'POST',
@@ -17,7 +19,7 @@ const Dashboard = () => {
         },
     })
     const result=await response.json();
-    console.log(result)
+    setminutes(result?.user?.minutes)
     setmember(result?.user)
   }
   useEffect(() => {

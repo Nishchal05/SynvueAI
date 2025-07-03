@@ -25,26 +25,26 @@ import {
 import { useRouter } from "next/navigation";
 import { DataContext } from "../DataProvider";
 const Sidebar = () => {
-  const { view, setView } = useContext(DataContext);
-  const [minutes,setminutes]=useState(7);
+  const { view, setView, minutes,setminutes, setuserprofile} = useContext(DataContext);
   const user=useUser();
   const router=useRouter();
   const userdata = async () => {
-    if (!user?.user?.primaryEmailAddress?.emailAddress) return;
+    if (!user?.primaryEmailAddress?.emailAddress) return;
     try {
-      const response = await fetch(`/api/createuser?email=${user.user.primaryEmailAddress.emailAddress}`);
+      const response = await fetch(`/api/createuser?email=${user.primaryEmailAddress.emailAddress}`);
       const result = await response.json();
       setminutes(result?.user?.minutes || 7);
+      setuserprofile(result);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
   
   useEffect(() => {
-    if (user?.user?.primaryEmailAddress?.emailAddress) {
+    if (user?.primaryEmailAddress?.emailAddress) {
       userdata();
     }
-  }, [user]);
+  }, []);
   
   return (
     <>

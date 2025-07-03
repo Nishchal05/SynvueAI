@@ -52,3 +52,28 @@ export async function GET(req) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
+export async function PUT(req) {
+  try {
+    const { minutes, email } = await req.json();
+
+    if (!minutes || !email) {
+      return NextResponse.json({ message: "Credential missing!" }, { status: 400 });
+    }
+
+    const response = await User.findOneAndUpdate(
+      { email },
+      { $set: { minutes: Number(minutes) } },
+      { new: true }
+    );
+    console.log(response)
+
+    if (response) {
+      return NextResponse.json({ message: "Update successful" }, { status: 200 });
+    } else {
+      return NextResponse.json({ message: "Update not successful" }, { status: 404 });
+    }
+  } catch (error) {
+    console.error("❌ Update error:", error);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  }
+}

@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "../_component/Sidebar";
 import { Progress } from "@/components/ui/progress";
 import { useUser } from "@clerk/nextjs";
 import { Dot } from "lucide-react";
 import InterviewSuccessClient from "../_component/InterviewSuccessClient";
 import { Suspense } from "react";
+import { DataContext } from "../DataProvider";
+import { toast } from "sonner";
 const Page = () => {
   const [loading, setloading] = useState(false);
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(33.33);
-  const [interviewid,setinterviewid]=useState();
-  const [useremail,setuseremail]=useState();
+  const [interviewid, setinterviewid] = useState();
+  const { minutes } = useContext(DataContext);
+  const [useremail, setuseremail] = useState();
   const { user } = useUser();
   const [formData, setFormData] = useState({
     jobPosition: "",
@@ -33,7 +36,27 @@ const Page = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "duration") {
+      if (value === "") {
+        setFormData((prev) => ({ ...prev, [name]: "" }));
+        return;
+      }
+
+      const numericValue = Number(value);
+
+      if (!isNaN(numericValue)) {
+        if (numericValue > minutes) {
+          toast(`You only have ${minutes} minutes left!`);
+          return;
+        }
+
+        setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleInterviewLink = async () => {
@@ -50,7 +73,7 @@ const Page = () => {
       if (result) {
         console.log(result);
         setinterviewid(result.interviewId);
-        setuseremail(result.useremail)
+        setuseremail(result.useremail);
         setloading(false);
         nextStep();
       }
@@ -58,6 +81,7 @@ const Page = () => {
       console.error(error);
     }
   };
+  console.log(minutes);
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
@@ -68,8 +92,6 @@ const Page = () => {
           </h2>
 
           <Progress value={progress} className="mb-6" />
-
-          {/* Step 1 */}
           {step === 1 && (
             <div className="space-y-5">
               <div>
@@ -108,8 +130,10 @@ const Page = () => {
                   name="duration"
                   value={formData.duration}
                   onChange={handleChange}
+                  min={1}
                   placeholder="e.g. 30"
-                  className="w-full border border-gray-300 px-4 py-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  className={`w-full border px-4 py-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 
+    ${formData.duration > minutes ? "border-red-500" : "border-gray-300"}`}
                 />
               </div>
 
@@ -194,7 +218,12 @@ const Page = () => {
           )}
           {step === 3 && (
             <Suspense>
-              <InterviewSuccessClient interviewId={interviewid} email={useremail} jobPosition={formData.jobPosition} duration={formData.duration}/>
+              <InterviewSuccessClient
+                interviewId={interviewid}
+                email={useremail}
+                jobPosition={formData.jobPosition}
+                duration={formData.duration}
+              />
             </Suspense>
           )}
         </div>
