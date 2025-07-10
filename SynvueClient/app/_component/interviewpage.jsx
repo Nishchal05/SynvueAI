@@ -8,7 +8,7 @@ import { Mic, PhoneOff } from 'lucide-react';
 import Sidebar from './Sidebar';
 
 const InterviewPage = () => {
-  const { messages, sendMessage, sendUserResponse, isReady } = useWebSocket('ws://localhost:8080');
+  const { messages, sendMessage, sendUserResponse, isReady } = useWebSocket('ws://synvueai.onrender.com');
   const params = useSearchParams();
   const { setminutes, userprofile } = useContext(DataContext);
 

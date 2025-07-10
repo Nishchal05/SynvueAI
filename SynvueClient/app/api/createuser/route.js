@@ -65,7 +65,6 @@ export async function PUT(req) {
       { $set: { minutes: Number(minutes) } },
       { new: true }
     );
-    console.log(response)
 
     if (response) {
       return NextResponse.json({ message: "Update successful" }, { status: 200 });
