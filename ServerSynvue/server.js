@@ -97,6 +97,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log('✅ WebSocket server ready on ws://localhost:8080');
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+  console.log(`✅ WebSocket server ready on port ${PORT}`);
 });
