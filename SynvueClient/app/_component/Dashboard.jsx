@@ -29,9 +29,6 @@ const Dashboard = () => {
     }
   }, [user]);
   
-useEffect(() => {
-  useWebSocket('wss://synvueai.onrender.com');
-}, []);
   return (
     <div className="h-100vh w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 sm:p-4 mt-52 md:mt-[-100px]">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8">
