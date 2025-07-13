@@ -2,7 +2,9 @@ const { createServer } = require('http');
 const WebSocket = require('ws');
 const OpenAI = require('openai');
 require('dotenv').config();
-
+const express = require('express');
+const app = express();
+app.get('/', (req, res) => res.send('WebSocket server is running'));
 const clientConversations = new Map(); // Map<ws, { history, index, questions, jobrole, username }>
 
 const openai = new OpenAI({
@@ -98,6 +100,6 @@ wss.on('connection', (ws) => {
 });
 
 const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-  console.log(`✅ WebSocket server ready on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ WebSocket server ready on 0.0.0.0:${PORT}`);
 });
