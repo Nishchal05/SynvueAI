@@ -4,6 +4,7 @@ import React,{useEffect,useState,useContext} from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import { FaMicrophoneAlt, FaPhoneAlt, FaHistory } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import useWebSocket from '@/hooks/usewebsocket';
 import { DataContext } from '../DataProvider';
 const Dashboard = () => {
   const { user } = useUser();
@@ -29,9 +30,7 @@ const Dashboard = () => {
   }, [user]);
   
 useEffect(() => {
-    fetch("https://synvueai.onrender.com/api/ping") 
-      .then(() => console.log("Backend pinged successfully"))
-      .catch((err) => console.log("Warm-up failed:", err));
+  useWebSocket('wss://synvueai.onrender.com');
 }, []);
   return (
     <div className="h-100vh w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 sm:p-4 mt-52 md:mt-[-100px]">
