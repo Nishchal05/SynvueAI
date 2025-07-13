@@ -16,7 +16,7 @@ const openai = new OpenAI({
   },
 });
 
-const server = createServer();
+const server = createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
