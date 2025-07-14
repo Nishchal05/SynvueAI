@@ -9,6 +9,7 @@ import Sidebar from './Sidebar';
 
 const InterviewPage = () => {
   const { messages, sendMessage, sendUserResponse, isReady } = useWebSocket('wss://synvueai.onrender.com/ws');
+
   const params = useSearchParams();
   const { setminutes, userprofile } = useContext(DataContext);
 

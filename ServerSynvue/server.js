@@ -3,10 +3,10 @@ const WebSocket = require('ws');
 const OpenAI = require('openai');
 require('dotenv').config();
 const express = require('express');
-const app = express();
-app.get('/', (req, res) => res.send('WebSocket server is running'));
-const clientConversations = new Map(); // Map<ws, { history, index, questions, jobrole, username }>
 
+const app = express();
+app.get('/ws', (req, res) => res.send('WebSocket server is running'));
+const clientConversations = new Map();
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
