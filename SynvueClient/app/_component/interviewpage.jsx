@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useWebSocket from "@/hooks/usewebsocket";
 import { DataContext } from "../DataProvider";
 import { Mic, PhoneOff } from "lucide-react";
@@ -14,16 +14,16 @@ const InterviewPage = () => {
     "wss://synvueai.onrender.com/ws"
   );
   const params = useSearchParams();
-  const { setminutes, userprofile } = useContext(DataContext);
-  const [timeLeft, setTimeLeft] = useState(minutes * 60);
+  const { minutes,setminutes, userprofile,interviewduration } = useContext(DataContext);
+  const [timeLeft, setTimeLeft] = useState(interviewduration * 60);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
-
+  const [callendprocess,setcallendprocess]=useState(false);
   const [interviewState, setInterviewState] = useState("loading");
   const [startUserResponse, setStartUserResponse] = useState(false);
   const [transcript, setTranscript] = useState("");
   const recognitionRef = useRef(null);
-
+const router=useRouter();
   const interviewId = params.get("id");
   const email = params.get("mail");
 
@@ -48,7 +48,7 @@ const InterviewPage = () => {
       endCall(); 
       return;
     }  
-    if (timeLeft <= 120 && !toastShown && timeLeft > 0){
+    if (timeLeft <= 120  && timeLeft > 0){
       toast("⏳ Hurry up! Only 2 minutes left!");
     }
     const timer = setInterval(() => {
@@ -61,13 +61,13 @@ const InterviewPage = () => {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [timeLeft, interviewduration]);
   const endCall = () => {
-    setCallEnded(true);
+handlecallend();
+setcallendprocess(true);
     window.speechSynthesis.cancel(); 
     recognitionRef.current?.stop();  
     recognitionRef.current = null;
-    ws.close();
   };
   useEffect(() => {
     const fetchInterviewData = async () => {
@@ -158,7 +158,28 @@ const InterviewPage = () => {
     const secs = (seconds % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
   };
-  
+  const handlecallend=async()=>{
+    const profileminutesleft=minutes-interviewduration;
+    try{
+      const response=await fetch('/api/createuser',{
+        method:"PUT",
+        body:JSON.stringify({
+          minutes:profileminutesleft,
+          email:email
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+      if(response.ok){
+        setCallEnded(true);
+        setcallendprocess(false);
+        router.push('/');
+      }
+    }catch(error){
+      toast(error)
+    }
+  }
   if (!isReady || interviewState === "loading") {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center bg-gray-100">
@@ -181,68 +202,72 @@ const InterviewPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 flex-col md:flex-row">
-  {/* Sidebar */}
-  <Sidebar />
-
-  {/* Main Interview Section */}
-  <main className="flex-1 flex flex-col p-4 relative">
-    {/* Interview Header with Timer */}
-    <div className="sticky top-0 z-10 bg-white shadow p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-      <h2 className="text-2xl font-bold text-blue-800">🎯 AI Interview Session</h2>
-      <div className="text-sm md:text-base text-gray-700 bg-blue-100 px-4 py-2 rounded-full shadow">
-  ⏳ Time Remaining: <span className="font-semibold">{formatTime(timeLeft)}</span>
-</div>
+      callendprocess ? <div className="flex flex-col items-center justify-center h-screen text-center text-red-600">
+      <FaSpinner className=" animate-spin"/>
+      <h2 className="text-xl font-semibold">Ending Interview...</h2>
+      <p className="text-sm">Hold tight! We hope you enjoyed the interview session — your feedback is always welcome.</p>
+    </div> :<div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 flex-col md:flex-row">
+      {/* Sidebar */}
+      <Sidebar />
+    
+      {/* Main Interview Section */}
+      <main className="flex-1 flex flex-col p-4 relative">
+        {/* Interview Header with Timer */}
+        <div className="sticky top-0 z-10 bg-white shadow p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <h2 className="text-2xl font-bold text-blue-800">🎯 AI Interview Session</h2>
+          <div className="text-sm md:text-base text-gray-700 bg-blue-100 px-4 py-2 rounded-full shadow">
+      ⏳ Time Remaining: <span className="font-semibold">{formatTime(timeLeft)}</span>
     </div>
-
-    {/* Interview Avatars */}
-    <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0 mb-6 items-center justify-center">
-      {/* AI Recruiter Card */}
-      <div className="w-44 h-44 bg-white shadow-xl rounded-2xl flex flex-col items-center justify-center px-4 py-6 transition duration-300 hover:scale-105">
-        <div className={`w-16 h-16 rounded-full mb-3 overflow-hidden ${messages.length ? "animate-pulse" : ""}`}>
-          <img src="/IntervueLogo.png" alt="AI Recruiter" className="w-full h-full object-cover" />
         </div>
-        <p className="font-medium text-gray-800">SynvueAI</p>
-      </div>
-
-      {/* Candidate Card */}
-      <div className="w-44 h-44 bg-white shadow-xl rounded-2xl flex flex-col items-center justify-center px-4 py-6 transition duration-300 hover:scale-105">
-        <div className={`w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl mb-3 ${startUserResponse ? "animate-pulse" : ""}`}>
-          {firstletter}
+    
+        {/* Interview Avatars */}
+        <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0 mb-6 items-center justify-center">
+          {/* AI Recruiter Card */}
+          <div className="w-44 h-44 bg-white shadow-xl rounded-2xl flex flex-col items-center justify-center px-4 py-6 transition duration-300 hover:scale-105">
+            <div className={`w-16 h-16 rounded-full mb-3 overflow-hidden ${messages.length ? "animate-pulse" : ""}`}>
+              <img src="/IntervueLogo.png" alt="AI Recruiter" className="w-full h-full object-cover" />
+            </div>
+            <p className="font-medium text-gray-800">SynvueAI</p>
+          </div>
+    
+          {/* Candidate Card */}
+          <div className="w-44 h-44 bg-white shadow-xl rounded-2xl flex flex-col items-center justify-center px-4 py-6 transition duration-300 hover:scale-105">
+            <div className={`w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl mb-3 ${startUserResponse ? "animate-pulse" : ""}`}>
+              {firstletter}
+            </div>
+            <p className="font-medium text-gray-800">{candidatename}</p>
+          </div>
         </div>
-        <p className="font-medium text-gray-800">{candidatename}</p>
-      </div>
+    
+        {/* Controls */}
+        <div className="flex items-center justify-center gap-6 mb-6">
+          <button className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center shadow hover:bg-gray-300 transition">
+            <Mic className="text-gray-700" />
+          </button>
+          <button
+      className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center shadow hover:bg-red-600 transition"
+      onClick={endCall}
+    >
+      <PhoneOff />
+    </button>
+    
+        </div>
+    
+        <p className="text-gray-600 text-center text-sm mb-4 italic">Interview in Progress...</p>
+    
+        {/* Messages Box */}
+        <div className="bg-white max-w-3xl mx-auto w-full rounded-lg p-4 shadow-md overflow-y-auto max-h-64">
+          {messages.map((msg, index) => (
+            <p key={index} className="text-sm text-gray-800 mb-2">{msg}</p>
+          ))}
+        </div>
+    
+        {/* Listening Status */}
+        {startUserResponse && (
+          <p className="italic text-sm text-blue-600 mt-4 text-center">🎙️ Listening: {transcript}</p>
+        )}
+      </main>
     </div>
-
-    {/* Controls */}
-    <div className="flex items-center justify-center gap-6 mb-6">
-      <button className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center shadow hover:bg-gray-300 transition">
-        <Mic className="text-gray-700" />
-      </button>
-      <button
-  className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center shadow hover:bg-red-600 transition"
-  onClick={endCall}
->
-  <PhoneOff />
-</button>
-
-    </div>
-
-    <p className="text-gray-600 text-center text-sm mb-4 italic">Interview in Progress...</p>
-
-    {/* Messages Box */}
-    <div className="bg-white max-w-3xl mx-auto w-full rounded-lg p-4 shadow-md overflow-y-auto max-h-64">
-      {messages.map((msg, index) => (
-        <p key={index} className="text-sm text-gray-800 mb-2">{msg}</p>
-      ))}
-    </div>
-
-    {/* Listening Status */}
-    {startUserResponse && (
-      <p className="italic text-sm text-blue-600 mt-4 text-center">🎙️ Listening: {transcript}</p>
-    )}
-  </main>
-</div>
   );
 };
 function debounce(func, delay) {

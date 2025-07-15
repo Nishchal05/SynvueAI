@@ -14,7 +14,7 @@ const Page = () => {
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(33.33);
   const [interviewid, setinterviewid] = useState();
-  const { minutes } = useContext(DataContext);
+  const { minutes, setinterviewduration} = useContext(DataContext);
   const [useremail, setuseremail] = useState();
   const { user } = useUser();
   const [formData, setFormData] = useState({
@@ -43,7 +43,6 @@ const Page = () => {
         setFormData((prev) => ({ ...prev, [name]: "" }));
         return;
       }
-
       const numericValue = Number(value);
 
       if (!isNaN(numericValue)) {
@@ -51,8 +50,8 @@ const Page = () => {
           toast(`You only have ${minutes} minutes left!`);
           return;
         }
-
         setFormData((prev) => ({ ...prev, [name]: numericValue }));
+        setinterviewduration(numericValue); 
       }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -71,7 +70,6 @@ const Page = () => {
       });
       const result = await response.json();
       if (result) {
-        console.log(result);
         setinterviewid(result.interviewId);
         setuseremail(result.useremail);
         setloading(false);
@@ -81,7 +79,7 @@ const Page = () => {
       console.error(error);
     }
   };
-  console.log(minutes);
+  
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />

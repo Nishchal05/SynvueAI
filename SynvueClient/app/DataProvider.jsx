@@ -10,8 +10,9 @@ const DataProvider = ({ children }) => {
   const [view, setView] = useState(false);
   const [minutes, setminutes] = useState(0);
   const [userprofile, setuserprofile]=useState(null);
+  const [interviewduration, setinterviewduration]=useState(null);
   return (
-    <DataContext.Provider value={{ view, setView, minutes, setminutes, userprofile, setuserprofile}}>
+    <DataContext.Provider value={{ view, setView, minutes, setminutes, userprofile, setuserprofile, interviewduration, setinterviewduration}}>
       {children}
     </DataContext.Provider>
   );
