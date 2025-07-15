@@ -15,7 +15,7 @@ const InterviewPage = () => {
   );
   const params = useSearchParams();
   const { minutes, setminutes, userprofile, interviewduration } = useContext(DataContext);
-  const [timeLeft, setTimeLeft] = useState(() => (interviewduration ? interviewduration * 60 : 3));
+  const [timeLeft, setTimeLeft] = useState(interviewduration * 60);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
   const [callendprocess, setcallendprocess] = useState(false);
