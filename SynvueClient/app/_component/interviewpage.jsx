@@ -14,7 +14,7 @@ const InterviewPage = () => {
     "wss://synvueai.onrender.com/ws"
   );
   const params = useSearchParams();
-  const { minutes, setminutes, userprofile, interviewduration } = useContext(DataContext);
+  const { minutes, setminutes, userprofile, interviewduration,setinterviewduration } = useContext(DataContext);
   const [timeLeft, setTimeLeft] = useState(null);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
@@ -93,6 +93,7 @@ const InterviewPage = () => {
         if (result?.interviewdetails) {
           setminutes(result.minutes);
           setTimeLeft(result.interviewdetails.duration * 60);
+          setinterviewduration(result.interviewdetails.duration * 60);
           sendMessage({
             username: result.name || userprofile.name || "Candidate",
             jobrole: result.interviewdetails.domain || "Software Engineer",
