@@ -15,7 +15,7 @@ const InterviewPage = () => {
   );
   const params = useSearchParams();
   const { minutes, setminutes, userprofile, interviewduration } = useContext(DataContext);
-  const [timeLeft, setTimeLeft] = useState(interviewduration * 60);
+  const [timeLeft, setTimeLeft] = useState(null);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
   const [callendprocess, setcallendprocess] = useState(false);
@@ -49,17 +49,16 @@ const InterviewPage = () => {
 
   // Countdown timer with toast warning
   useEffect(() => {
-    if (interviewState !== "ready") return;
+    if (interviewState !== "ready" || timeLeft === null || timeLeft <= 0) return;
   
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer);
-          endCall(); 
+          endCall();
           return 0;
         }
   
-        // Show warning at 2 minutes left
         if (prevTime === 121) {
           toast("⏳ Hurry up! Only 2 minutes left!");
         }
@@ -68,8 +67,8 @@ const InterviewPage = () => {
       });
     }, 1000);
   
-    return () => clearInterval(timer); 
-  }, [interviewState]); 
+    return () => clearInterval(timer);
+  }, [interviewState, timeLeft]);
   
 
   const endCall = () => {
@@ -93,6 +92,7 @@ const InterviewPage = () => {
 
         if (result?.interviewdetails) {
           setminutes(result.minutes);
+          setTimeLeft(result.interviewdetails.duration * 60);
           sendMessage({
             username: result.name || userprofile.name || "Candidate",
             jobrole: result.interviewdetails.domain || "Software Engineer",
