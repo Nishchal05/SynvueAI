@@ -49,6 +49,7 @@ const InterviewPage = () => {
 
   // Countdown timer with toast warning
   useEffect(() => {
+    if (interviewState !== "ready") return;
     if (timeLeft <= 0) {
       endCall();
       return;
