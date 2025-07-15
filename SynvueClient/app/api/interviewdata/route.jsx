@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import usermodal from "@/app/modal/usermodal";
+import dbconnect from "@/app/DBConnection";
 
 export async function GET(req) {
   try {
+    await dbconnect();
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("interviewid")?.trim();
     const email = searchParams.get("mail");
