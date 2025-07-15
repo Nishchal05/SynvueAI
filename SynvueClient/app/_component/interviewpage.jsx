@@ -15,7 +15,7 @@ const InterviewPage = () => {
   );
   const params = useSearchParams();
   const { minutes, setminutes, userprofile, interviewduration } = useContext(DataContext);
-  const [timeLeft, setTimeLeft] = useState(interviewduration * 60);
+  const [timeLeft, setTimeLeft] = useState(() => (interviewduration ? interviewduration * 60 : 0));
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
   const [callendprocess, setcallendprocess] = useState(false);
@@ -50,21 +50,27 @@ const InterviewPage = () => {
   // Countdown timer with toast warning
   useEffect(() => {
     if (interviewState !== "ready") return;
-    if (timeLeft <= 0) {
-      endCall();
-      return;
-    }
-
-    if (timeLeft === 120) {
-      toast("⏳ Hurry up! Only 2 minutes left!");
-    }
-
+  
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          endCall(); 
+          return 0;
+        }
+  
+        // Show warning at 2 minutes left
+        if (prevTime === 121) {
+          toast("⏳ Hurry up! Only 2 minutes left!");
+        }
+  
+        return prevTime - 1;
+      });
     }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft]);
+  
+    return () => clearInterval(timer); 
+  }, [interviewState]); 
+  
 
   const endCall = () => {
     handlecallend();
