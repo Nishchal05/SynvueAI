@@ -29,23 +29,20 @@ const InterviewPage = () => {
   const email = params.get("mail");
 
   // Load Google voice
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      const voiceToUse =
-        voices.find((v) => v.name === "Google US English") ||
-        voices.find((v) => v.lang === "en-US") ||
-        voices[0];
-      setSelectedVoice(voiceToUse);
-    };
-
-    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
-    loadVoices();
-
-    return () => {
-      window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
-    };
-  }, []);
+  const loadVoices = () => {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      // Retry after a short delay
+      setTimeout(loadVoices, 100);
+      return;
+    }
+    const voiceToUse =
+      voices.find((v) => v.name === "Google US English") ||
+      voices.find((v) => v.lang === "en-US") ||
+      voices[0];
+    setSelectedVoice(voiceToUse);
+  };
+  
 
   // Countdown timer with toast warning
   useEffect(() => {
@@ -113,18 +110,24 @@ const InterviewPage = () => {
 
   // Text-to-speech on AI response
   useEffect(() => {
-    if (!messages.length) return;
+    if (!messages.length || !selectedVoice) return;
+  
     const latestMessage = messages[messages.length - 1];
-
+  
     window.speechSynthesis.cancel();
     recognitionRef.current?.stop();
     recognitionRef.current = null;
-
+  
     const utterance = new SpeechSynthesisUtterance(latestMessage);
     utterance.voice = selectedVoice;
-    utterance.onend = () => setStartUserResponse(true);
+  
+    utterance.onend = () => {
+      setStartUserResponse(true);
+    };
+  
     window.speechSynthesis.speak(utterance);
-  }, [messages]);
+  }, [messages, selectedVoice]); // <-- add selectedVoice here
+  
 
   // Start speech recognition after voice finishes
   useEffect(() => {
@@ -233,7 +236,7 @@ const InterviewPage = () => {
   ) : (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 flex-col md:flex-row">
       <Sidebar />
-      <main className="flex-1 flex flex-col p-4 relative md:ml-[270px] md:mt-[100px] ml-0 mt-[100px]">
+      <main className="flex-1 flex flex-col p-4 relative md:ml-[270px] md:mt-[72px] ml-0 mt-[100px]">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white shadow p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <h2 className="text-2xl font-bold text-blue-800">🎯Interview Session</h2>
