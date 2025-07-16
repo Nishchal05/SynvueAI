@@ -4,7 +4,7 @@ import React,{useEffect,useState,useContext} from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
 import { FaMicrophoneAlt, FaPhoneAlt, FaHistory } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import useWebSocket from '@/hooks/usewebsocket';
+import InsightsIcon from '@mui/icons-material/Insights';
 import { DataContext } from '../DataProvider';
 const Dashboard = () => {
   const { user } = useUser();
@@ -45,7 +45,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">
-            <FaMicrophoneAlt /> Create Mock Interview
+            <FaMicrophoneAlt /> Create Interview
           </h3>
           <p className="text-gray-600 mb-4 text-sm sm:text-base">
             Practice real-time interview questions customized for your role.
@@ -56,19 +56,19 @@ const Dashboard = () => {
               router.push('/CreateInterView');
             }}
           >
-            Start Now
+            Create Now
           </button>
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">
-            <FaPhoneAlt /> Phone Screening
+            <InsightsIcon/> Analyzer
           </h3>
           <p className="text-gray-600 mb-4 text-sm sm:text-base">
-            Simulate HR or recruiter screening calls with instant feedback.
+          Scan. Score. Stand Out — Instantly improve your resume with AI insights.
           </p>
           <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
-            Try Screening
+            Get Insights
           </button>
         </div>
       </div>
