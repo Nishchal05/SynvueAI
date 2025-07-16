@@ -89,7 +89,6 @@ const InterviewPage = () => {
         );
         if (!response.ok) throw new Error("Failed to fetch");
         const result = await response.json();
-
         if (result?.interviewdetails) {
           setminutes(result.minutes);
           setTimeLeft(result.interviewdetails.duration * 60);
@@ -170,7 +169,7 @@ const InterviewPage = () => {
   }, 4000);
 
   const handlecallend = async () => {
-    const profileminutesleft = minutes - (interviewduration-timeLeft);
+    const profileminutesleft = minutes - ((interviewduration-timeLeft)/60);
     try {
       const response = await fetch("/api/createuser", {
         method: "PUT",
@@ -234,10 +233,10 @@ const InterviewPage = () => {
   ) : (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 flex-col md:flex-row">
       <Sidebar />
-      <main className="flex-1 flex flex-col p-4 relative">
+      <main className="flex-1 flex flex-col p-4 relative md:ml-[400px] ml-0">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white shadow p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold text-blue-800">🎯 AI Interview Session</h2>
+          <h2 className="text-2xl font-bold text-blue-800">🎯Interview Session</h2>
           <div className="text-sm md:text-base text-gray-700 bg-blue-100 px-4 py-2 rounded-full shadow">
             ⏳ Time Remaining: <span className="font-semibold">{formatTime(timeLeft)}</span>
           </div>
