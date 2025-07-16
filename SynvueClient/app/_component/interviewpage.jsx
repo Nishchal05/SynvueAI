@@ -14,7 +14,7 @@ const InterviewPage = () => {
     "wss://synvueai.onrender.com/ws"
   );
   const params = useSearchParams();
-  const { minutes, setminutes, userprofile, interviewduration,setinterviewduration } = useContext(DataContext);
+  const { minutes, setminutes, userprofile, interviewduration, setinterviewduration } = useContext(DataContext);
   const [timeLeft, setTimeLeft] = useState(null);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
@@ -50,7 +50,7 @@ const InterviewPage = () => {
   // Countdown timer with toast warning
   useEffect(() => {
     if (interviewState !== "ready" || timeLeft === null || timeLeft <= 0) return;
-  
+
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
@@ -58,25 +58,28 @@ const InterviewPage = () => {
           endCall();
           return 0;
         }
-  
+
         if (prevTime === 121) {
           toast("⏳ Hurry up! Only 2 minutes left!");
         }
-  
+
         return prevTime - 1;
       });
     }, 1000);
-  
+
     return () => clearInterval(timer);
   }, [interviewState, timeLeft]);
-  
+
 
   const endCall = () => {
     handlecallend();
     setcallendprocess(true);
     window.speechSynthesis.cancel();
-    recognitionRef.current?.stop();
-    recognitionRef.current = null;
+    // Ensure recognition is stopped before ending the call
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
   };
 
   // Fetch Interview Data from DB
@@ -113,69 +116,136 @@ const InterviewPage = () => {
 
   // Text-to-speech on AI response
   useEffect(() => {
-  if (!messages.length || !selectedVoice) return;
+    if (!messages.length || !selectedVoice) return;
 
-  const latestMessage = messages[messages.length - 1];
+    const latestMessage = messages[messages.length - 1];
 
-  window.speechSynthesis.cancel();
-  recognitionRef.current?.stop();
-  recognitionRef.current = null;
+    window.speechSynthesis.cancel();
+    // Stop ongoing recognition BEFORE AI starts speaking
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
+    setStartUserResponse(false); // Reset this, will be set to true on utterance end
 
-  const utterance = new SpeechSynthesisUtterance(latestMessage);
-  utterance.voice = selectedVoice;
+    const utterance = new SpeechSynthesisUtterance(latestMessage);
+    utterance.voice = selectedVoice;
 
-  utterance.onend = () => {
-    setStartUserResponse(true);
-  };
+    utterance.onend = () => {
+      console.log("AI speech ended, setting startUserResponse to true"); // Debug log
+      setStartUserResponse(true);
+    };
 
-  window.speechSynthesis.speak(utterance);
-}, [messages, selectedVoice]); // <-- add selectedVoice here
+    utterance.onerror = (event) => {
+      console.error("SpeechSynthesisUtterance error:", event);
+      // Even on error, try to enable user response if AI failed to speak
+      setStartUserResponse(true);
+    };
 
+    window.speechSynthesis.speak(utterance);
+  }, [messages, selectedVoice]);
 
   // Start speech recognition after voice finishes
   useEffect(() => {
-    if (!startUserResponse || recognitionRef.current) return;
+    // Only proceed if startUserResponse is true and recognition isn't already active
+    if (!startUserResponse || recognitionRef.current) {
+      console.log("Speech recognition not starting yet. startUserResponse:", startUserResponse, "recognitionRef.current:", recognitionRef.current); // Debug log
+      return;
+    }
 
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      console.error("SpeechRecognition not supported");
+      console.error("SpeechRecognition not supported in this browser.");
+      toast.error("Speech recognition not supported in your browser. Please use Chrome or Edge.");
       return;
     }
 
     const recognition = new SpeechRecognition();
     recognition.interimResults = true;
-    recognition.continuous = false;
+    recognition.continuous = true; // IMPORTANT CHANGE: Set to true for continuous listening
+    recognition.lang = 'en-US'; // Explicitly set language
 
-    recognition.addEventListener("result", (e) => {
-      const text = Array.from(e.results)
-        .map((r) => r[0].transcript)
-        .join("");
-      setTranscript(text);
-      debounceSend(text);
-    });
+    recognition.onstart = () => {
+      console.log("Speech recognition started."); // Debug log
+      setTranscript(""); // Clear previous transcript
+    };
 
-    recognition.start();
-    recognitionRef.current = recognition;
-  }, [startUserResponse]);
+    recognition.onresult = (event) => {
+      const interimTranscript = Array.from(event.results)
+        .filter(result => !result.isFinal)
+        .map(result => result[0].transcript)
+        .join('');
+      const finalTranscript = Array.from(event.results)
+        .filter(result => result.isFinal)
+        .map(result => result[0].transcript)
+        .join('');
+
+      setTranscript(interimTranscript || finalTranscript);
+
+      if (finalTranscript) {
+        console.log("Final transcript:", finalTranscript); // Debug log
+        debounceSend(finalTranscript);
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event); // Debug log
+      toast.error(`Microphone error: ${event.error}. Please check permissions.`);
+      setStartUserResponse(false); // Stop trying to listen if there's an error
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
+    };
+
+    recognition.onend = () => {
+      console.log("Speech recognition ended."); // Debug log
+      // If `startUserResponse` is still true, it means we expect more input
+      // and it might have ended due to a pause, so restart if needed
+      if (startUserResponse && !callEnded) { // Only restart if call hasn't ended
+        console.log("Restarting speech recognition due to onend event and startUserResponse still true.");
+        // We'll let the next useEffect cycle re-init if `startUserResponse` is still true
+        recognitionRef.current = null; // Clear ref so new instance can be created
+      }
+    };
+
+    try {
+      recognition.start();
+      recognitionRef.current = recognition;
+    } catch (error) {
+      console.error("Error starting speech recognition:", error); // Debug log
+      toast.error("Failed to start microphone. Please ensure permissions are granted.");
+      setStartUserResponse(false);
+      recognitionRef.current = null;
+    }
+  }, [startUserResponse]); // Dependency is still `startUserResponse`
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
-      recognitionRef.current?.stop();
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
     };
   }, []);
 
   const debounceSend = debounce((text) => {
+    console.log("Debounce sending user response:", text); // Debug log
     sendUserResponse(text);
+    // After sending the user's response, stop recognition and signal AI's turn
     setStartUserResponse(false);
-    recognitionRef.current?.stop();
-    recognitionRef.current = null;
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
+    setTranscript(""); // Clear transcript after sending
   }, 4000);
 
   const handlecallend = async () => {
-    const profileminutesleft = minutes - ((interviewduration-timeLeft)/60);
+    const profileminutesleft = parseFloat((minutes - ((interviewduration - timeLeft) / 60)).toFixed(1));
     try {
       const response = await fetch("/api/createuser", {
         method: "PUT",
@@ -252,7 +322,7 @@ const InterviewPage = () => {
         <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0 mb-6 items-center justify-center">
           {/* AI Avatar */}
           <div className="w-44 h-44 bg-white shadow-xl rounded-2xl flex flex-col items-center justify-center px-4 py-6 hover:scale-105 transition">
-            <div className={`w-16 h-16 rounded-full mb-3 overflow-hidden ${messages.length ? "animate-pulse" : ""}`}>
+            <div className={`w-16 h-16 rounded-full mb-3 overflow-hidden ${messages.length && !startUserResponse ? "animate-pulse" : ""}`}>
               <img src="/IntervueLogo.png" alt="AI Recruiter" className="w-full h-full object-cover" />
             </div>
             <p className="font-medium text-gray-800">SynvueAI</p>
