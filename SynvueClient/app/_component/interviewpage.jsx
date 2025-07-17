@@ -8,6 +8,7 @@ import { Mic, PhoneOff } from "lucide-react";
 import Sidebar from "./Sidebar";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
+import { FaSpeakerDeck } from "react-icons/fa6";
 
 const InterviewPage = () => {
   const { messages, sendMessage, sendUserResponse, isReady } = useWebSocket(
@@ -117,11 +118,8 @@ const InterviewPage = () => {
   // Text-to-speech on AI response
   useEffect(() => {
     if (!messages.length || !selectedVoice) return;
-
     const latestMessage = messages[messages.length - 1];
-
     window.speechSynthesis.cancel();
-    // Stop ongoing recognition BEFORE AI starts speaking
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
@@ -144,10 +142,7 @@ const InterviewPage = () => {
 
     window.speechSynthesis.speak(utterance);
   }, [messages, selectedVoice]);
-
-  // Start speech recognition after voice finishes
   useEffect(() => {
-    // Only proceed if startUserResponse is true and recognition isn't already active
     if (!startUserResponse || recognitionRef.current) {
       console.log("Speech recognition not starting yet. startUserResponse:", startUserResponse, "recognitionRef.current:", recognitionRef.current); // Debug log
       return;
@@ -339,7 +334,10 @@ const InterviewPage = () => {
 
         {/* Controls */}
         <div className="flex items-center justify-center gap-6 mb-6">
-          <button className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center shadow hover:bg-gray-300 transition">
+        <button className={`w-12 h-12 rounded-full flex items-center justify-center shadow hover:bg-gray-300 transition ${!startUserResponse ? " bg-[#00e786] animate-pulse":"bg-gray-200" }`}>
+            <FaSpeakerDeck className="text-gray-700"/>
+          </button>
+          <button className={`w-12 h-12 rounded-full flex items-center justify-center shadow hover:bg-gray-300 transition ${startUserResponse ? " bg-[#00e786] animate-pulse":"bg-gray-200" }`}>
             <Mic className="text-gray-700" />
           </button>
           <button
@@ -358,13 +356,6 @@ const InterviewPage = () => {
             <p key={index} className="text-sm text-gray-800 mb-2">{msg}</p>
           ))}
         </div>
-
-        {/* Live Transcript */}
-        {startUserResponse && (
-          <p className="italic text-sm text-blue-600 mt-4 text-center">
-            🎙️ Listening: {transcript}
-          </p>
-        )}
       </main>
     </div>
   );
