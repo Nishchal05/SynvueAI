@@ -22,7 +22,6 @@ const InterviewPage = () => {
     interviewduration,
     setinterviewduration,
   } = useContext(DataContext);
-
   const [timeLeft, setTimeLeft] = useState(null);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
@@ -113,6 +112,16 @@ const InterviewPage = () => {
         );
         if (!response.ok) throw new Error("Failed to fetch");
         const result = await response.json();
+        if (result.interviewdetails.linkExpiry) {
+          const now = new Date().getTime();
+          const expiryTime = new Date(result.interviewdetails.linkExpiry).getTime();
+  
+          if (now > expiryTime) {
+            toast.error("This interview link has expired.");
+            setInterviewState("expired");
+            return; 
+          }
+        }
         if (result?.interviewdetails) {
           setminutes(result.minutes);
           setTimeLeft(result.interviewdetails.duration * 60);
@@ -306,7 +315,22 @@ const InterviewPage = () => {
       </div>
     );
   }
-
+  useEffect(() => {
+    if (interviewState === "expired") {
+      const timeout = setTimeout(() => {
+        router.push('/');
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [interviewState]);
+  
+  if (interviewState === "expired") {
+    return (
+      <div className="text-red-500 text-lg font-semibold">
+        This interview link has expired. Please contact the organizer.
+      </div>
+    );
+  }
   if (!micStarted) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center bg-gray-100">
