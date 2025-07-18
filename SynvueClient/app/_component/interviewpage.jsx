@@ -37,7 +37,15 @@ const InterviewPage = () => {
   const interviewId = params.get("id");
   const email = params.get("mail");
 
-  // Voice setup
+  useEffect(() => {
+    if (interviewState === "expired") {
+      const timer = setTimeout(() => {
+        router.push('/');
+      }, 2000);
+  
+      return () => clearTimeout(timer);
+    }
+  }, [interviewState, router]);
   useEffect(() => {
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
@@ -315,15 +323,6 @@ const InterviewPage = () => {
       </div>
     );
   }
-  useEffect(() => {
-    if (interviewState === "expired") {
-      const timer = setTimeout(() => {
-        router.push('/');
-      }, 2000);
-  
-      return () => clearTimeout(timer); // cleanup
-    }
-  }, [interviewState, router]);
   
   if (interviewState === "expired") {
     return (
