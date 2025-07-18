@@ -136,22 +136,33 @@ const InterviewPage = () => {
   }, [interviewId, email, isReady]);
 
   // AI speaks
-  const handleStartInterview = () => {
-    setMicStarted(true); // or whatever you use to toggle mic
+  useEffect(() => {
+    if (!micStarted || !messages.length || !selectedVoice) return;
+  
     const latestMessage = messages[messages.length - 1];
-    if (!latestMessage || !selectedVoice) return;
+    if (!latestMessage) return;
   
     const utterance = new SpeechSynthesisUtterance(latestMessage);
     utterance.voice = selectedVoice;
   
-    utterance.onend = () => setStartUserResponse(true);
+    utterance.onend = () => {
+      setStartUserResponse(true);
+    };
     utterance.onerror = () => {
       setStartUserResponse(true);
       toast.error("Failed to speak the message.");
     };
   
-    window.speechSynthesis.speak(utterance);
-  };
+    // Important for mobile browsers: delay slightly to allow buffer
+    setTimeout(() => {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }, 150);
+  }, [messages, selectedVoice, micStarted]);
+  const handleStartInterview = () => {
+    // only triggers mic + allows useEffect to speak when message arrives
+    setMicStarted(true);
+  };  
 
   useEffect(() => {
     if (!startUserResponse || recognitionRef.current || !micStarted) return;
