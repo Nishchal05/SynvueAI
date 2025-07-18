@@ -317,12 +317,13 @@ const InterviewPage = () => {
   }
   useEffect(() => {
     if (interviewState === "expired") {
-      const timeout = setTimeout(() => {
+      const timer = setTimeout(() => {
         router.push('/');
       }, 2000);
-      return () => clearTimeout(timeout);
+  
+      return () => clearTimeout(timer); // cleanup
     }
-  }, [interviewState]);
+  }, [interviewState, router]);
   
   if (interviewState === "expired") {
     return (
@@ -330,7 +331,7 @@ const InterviewPage = () => {
         This interview link has expired. Please contact the organizer.
       </div>
     );
-  }
+  }  
   if (!micStarted) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center bg-gray-100">
