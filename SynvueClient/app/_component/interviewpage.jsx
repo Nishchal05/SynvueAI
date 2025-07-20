@@ -169,16 +169,13 @@ const InterviewPage = () => {
       setStartUserResponse(true);
       toast.error("Failed to speak the message.");
     };
-  
-    // Important for mobile browsers: delay slightly to allow buffer
     setTimeout(() => {
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
     }, 150);
   }, [messages, selectedVoice, micStarted]);
   const handleStartInterview = () => {
-    // only triggers mic + allows useEffect to speak when message arrives
-    setMicStarted(true);
+      setMicStarted(true);
   };  
 
   useEffect(() => {
@@ -326,7 +323,7 @@ const InterviewPage = () => {
   
   if (interviewState === "expired") {
     return (
-      <div className="text-red-500 text-lg font-semibold">
+      <div className="flex flex-col items-center justify-center h-screen text-center text-red-600">
         This interview link has expired. Please contact the organizer.
       </div>
     );

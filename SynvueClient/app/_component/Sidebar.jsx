@@ -72,34 +72,32 @@ const Sidebar = () => {
               <FaMicrophoneAlt className="text-xl bg-gradient-to-r text-indigo-700  bg-clip-text" />
               Create Interview
             </div>
-            <Link
-              href="/Billing"
+            <div
+              onClick={()=>{!UserButton ? router.push('/Billing') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
               <FaCreditCard className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text" />
               Billing
-            </Link>
-            <Link
-              href="/Contact"
+            </div>
+            <div
+            onClick={()=>{!UserButton ? router.push('/Contact') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
             <HandshakeIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               Contact Us
-            </Link>
-            <Link
-              href="/Feedback"
+            </div>
+            <div
+              onClick={()=>{!UserButton ? router.push('/Feedback') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
               className="flex items-center gap-3 hover:text-indigo-600 transition"
             >
              <FeedbackIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               FeedBack
-            </Link>
+            </div>
           </nav>
         </div>
-
-        {/* Credits & Auth */}
         <div className="text-gray-700">
           <div className="mb-4">
-            🎯 <span className="font-semibold">Minutes left:</span> {minutes}
+            🎯 <span className="font-semibold">Synvue Coin:</span> {minutes}
           </div>
           <div className="flex items-center gap-3">
           <SignedOut>
