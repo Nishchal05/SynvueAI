@@ -62,7 +62,7 @@ const Dashboard = () => {
   const paginatedInterviews = interviewArray.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br mt-[140px] from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6">
+    <div className="min-h-screen w-full bg-gradient-to-br mt-[150px]  from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8">
         <div className="mb-4 sm:mb-0">
           <h2 className="text-xl sm:text-2xl font-bold text-indigo-700">
