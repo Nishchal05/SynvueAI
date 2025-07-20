@@ -81,7 +81,7 @@ wss.on('connection', (ws) => {
       // 3. Common logic: Call OpenAI and send response
       const completion = await openai.chat.completions.create({
         // 👇 FIX: Replace the model name here
-        model: "meta-llama/llama-3.3-70b-instruct:free", // Corrected and valid model name
+        model: "google/gemini-2.0-flash-exp:free", 
         messages: context.history,
       });
 
