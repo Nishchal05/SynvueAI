@@ -66,29 +66,29 @@ const Sidebar = () => {
               Home
             </Link>
             <div
-              onClick={()=>{!UserButton ? router.push('/CreateInterView') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
+              onClick={()=>{UserButton ? router.push('/CreateInterView') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
               className="flex items-center gap-3 hover:text-indigo-600 transition cursor-pointer"
             >
               <FaMicrophoneAlt className="text-xl bg-gradient-to-r text-indigo-700  bg-clip-text" />
               Create Interview
             </div>
             <div
-              onClick={()=>{!UserButton ? router.push('/Billing') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
-              className="flex items-center gap-3 hover:text-indigo-600 transition"
+              onClick={()=>{UserButton ? router.push('/Billing') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
+              className="flex items-center gap-3 hover:text-indigo-600 transition cursor-pointer"
             >
               <FaCreditCard className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text" />
               Billing
             </div>
             <div
-            onClick={()=>{!UserButton ? router.push('/Contact') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
-              className="flex items-center gap-3 hover:text-indigo-600 transition"
+            onClick={()=>{UserButton ? router.push('/Contact') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
+              className="flex items-center gap-3 hover:text-indigo-600 transition cursor-pointer"
             >
             <HandshakeIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               Contact Us
             </div>
             <div
               onClick={()=>{!UserButton ? router.push('/Feedback') : router.push('https://harmless-civet-15.accounts.dev/sign-up?redirect_url=http%3A%2F%2Flocalhost%3A3000%2F')}}
-              className="flex items-center gap-3 hover:text-indigo-600 transition"
+              className="flex items-center gap-3 hover:text-indigo-600 transition cursor-pointer"
             >
              <FeedbackIcon className="text-xl bg-gradient-to-r text-indigo-700 bg-clip-text"/>
               FeedBack
