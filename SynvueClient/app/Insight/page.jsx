@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ArrowRight, UploadCloud, FileText, Loader, CheckCircle, AlertTriangle } from 'lucide-react';
-
+import Sidebar from '../_component/Sidebar';
 // Mock API function to simulate backend analysis
 const mockAnalyzeResumeAPI = async (domain, resumeFile) => {
     console.log("Sending to backend:", { domain, fileName: resumeFile.name });
@@ -147,7 +147,9 @@ const ResumeAnalyzerPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 text-white font-sans mt-11">
+       <div className='flex min-h-screen bg-gray-100'>
+        <Sidebar/>
+        <div className="min-h-screen w-full md:ml-64 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 text-white font-sans mt-11">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 
                 {/* Header */}
@@ -164,7 +166,6 @@ const ResumeAnalyzerPage = () => {
                     {/* Conditional Rendering: Show Analyzer Form or Results */}
                     {!analysisResult && !isLoading && (
                         <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-2xl shadow-blue-900/20">
-                            {/* Step 1: Job Domain */}
                             <div className="mb-6">
                                 <label htmlFor="jobDomain" className="block text-lg font-semibold mb-2 text-slate-700">
                                     Step 1: Enter Job Domain
@@ -273,6 +274,7 @@ const ResumeAnalyzerPage = () => {
                 </main>
             </div>
         </div>
+       </div>
     );
 };
 
