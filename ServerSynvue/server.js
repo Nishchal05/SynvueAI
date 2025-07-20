@@ -36,9 +36,7 @@ wss.on('connection', (ws) => {
             {
               role: "system",
               content: `You are a professional virtual interviewer for a ${jobrole} position.
-              
             Conduct a mock interview with '${username}' using the following strict rules:
-            
             1. Greet '${username}' very briefly (1 sentence max).
             2. Ask one question at a time from the provided list only.
             3. After each answer, give short feedback (1 sentence only).
@@ -63,6 +61,7 @@ wss.on('connection', (ws) => {
       // 2. Handling user's response to a question
       } else if (message.type === 'response' && context) {
         const userReply = message.userresponse;
+        console.log(userReply);
         context.history.push({ role: "user", content: userReply });
 
         // Check if the interview is over
@@ -80,7 +79,6 @@ wss.on('connection', (ws) => {
       
       // 3. Common logic: Call OpenAI and send response
       const completion = await openai.chat.completions.create({
-        // 👇 FIX: Replace the model name here
         model: "google/gemini-2.0-flash-exp:free", 
         messages: context.history,
       });
