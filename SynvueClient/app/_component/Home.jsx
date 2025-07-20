@@ -40,10 +40,10 @@ const Home = () => {
           {/* CTA Button */}
           <div className="flex justify-center md:justify-start">
             <SignUpButton className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full text-lg font-semibold shadow-xl hover:scale-105 transition duration-300 cursor-pointer focus:ring-2 focus:ring-indigo-400">
-              <span className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 <FaPlay />
                 Start Preparation
-              </span>
+              </div>
             </SignUpButton>
           </div>
         </div>

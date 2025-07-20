@@ -62,7 +62,7 @@ const Dashboard = () => {
   const paginatedInterviews = interviewArray.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br mt-[150px]  from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6">
+    <div className="min-h-screen w-full bg-gradient-to-br mt-[180px]  from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8">
         <div className="mb-4 sm:mb-0">
           <h2 className="text-xl sm:text-2xl font-bold text-indigo-700">
@@ -98,7 +98,10 @@ const Dashboard = () => {
           <p className="text-gray-600 mb-4 text-sm sm:text-base">
             Scan. Score. Stand Out — Instantly improve your resume with AI insights.
           </p>
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
+          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
+          onClick={()=>{
+            router.push('/Insight')
+          }}>
             Get Insights
           </button>
         </div>
