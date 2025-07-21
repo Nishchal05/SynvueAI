@@ -83,7 +83,7 @@ Conduct a mock interview with '${username}' using the following strict rules:
       });
 
       const text = result.response.text();
-      context.history.push({ role: 'assistant', content: text });
+      context.history.push({ role: 'model', content: text });
       clientConversations.set(ws, context);
 
       ws.send(JSON.stringify({ from: 'ai', message: text }));

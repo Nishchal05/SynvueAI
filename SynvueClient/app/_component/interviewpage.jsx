@@ -357,7 +357,7 @@ const InterviewPage = () => {
   ) : (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 flex-col md:flex-row">
       <Sidebar />
-      <main className="flex-1 flex flex-col p-4 relative md:ml-[270px] md:mt-[100px] ml-0 mt-[100px]">
+      <main className="flex-1 flex flex-col p-4 relative md:ml-[270px] md:mt-[60px] ml-0 mt-[60px]">
         <div className="sticky top-0 z-10 bg-white shadow p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <h2 className="text-2xl font-bold text-blue-800">🎯Interview Session</h2>
           <div className="text-sm md:text-base text-gray-700 bg-blue-100 px-4 py-2 rounded-full shadow">
