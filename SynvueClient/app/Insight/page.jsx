@@ -4,52 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ArrowRight, UploadCloud, FileText, Loader, CheckCircle, AlertTriangle } from 'lucide-react';
 import Sidebar from '../_component/Sidebar';
-// Mock API function to simulate backend analysis
-const mockAnalyzeResumeAPI = async (domain, resumeFile) => {
-    console.log("Sending to backend:", { domain, fileName: resumeFile.name });
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    // Simulate a successful response
-    return {
-        success: true,
-        data: {
-            atsScore: Math.floor(Math.random() * (95 - 75 + 1)) + 75, // Random score between 75 and 95
-            feedback: [
-                {
-                    title: "Keyword Optimization",
-                    suggestion: "Your resume is well-optimized with relevant keywords like 'React', 'Node.js', and 'System Design', matching the job domain.",
-                    isPositive: true,
-                },
-                {
-                    title: "Contact Information",
-                    suggestion: "Contact details are clear and present. Consider adding a link to your portfolio or GitHub profile.",
-                    isPositive: true,
-                },
-                {
-                    title: "Action Verbs",
-                    suggestion: "Excellent use of action verbs like 'Developed', 'Led', and 'Architected'. This clearly demonstrates your impact.",
-                    isPositive: true,
-                },
-                {
-                    title: "Formatting & Readability",
-                    suggestion: "The resume format is clean but could be improved. The 'Projects' section has inconsistent date formatting.",
-                    isPositive: false,
-                }
-            ]
-        }
-    };
-    // To test an error state, you can uncomment this:
-    /*
-    return {
-        success: false,
-        error: "Failed to parse the uploaded resume. Please ensure it is a valid PDF or DOCX file."
-    };
-    */
-};
-
-
-// Circular Progress component for ATS Score
+  
 const AtsScoreCircle = ({ score }) => {
     const sqSize = 160;
     const strokeWidth = 14;
@@ -100,43 +55,55 @@ const ResumeAnalyzerPage = () => {
     const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        if (!resumeFile || !jobDomain) {
+          alert("Please upload resume and enter job description");
+          return;
+        }
+      
+        const formData = new FormData();
+        formData.append("resume", resumeFile);
+        formData.append("jobDescription", jobDomain);
+        setIsLoading(true);
+        setError('');
+        
+        try {
+          const res = await fetch("/api/ai_analyzer", {
+            method: "POST",
+            body: formData,
+          });
+          
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Failed to analyze resume");
+          }
+          
+          const result = await res.json();
+          setAnalysisResult(result);
+        } catch (err) {
+          console.error("Error submitting form", err);
+          setError(err.message || "Failed to analyze resume");
+        } finally {
+          setIsLoading(false);
+        }
+      };
     const onDrop = useCallback(acceptedFiles => {
-        // We only take the first file
         if (acceptedFiles.length > 0) {
             setResumeFile(acceptedFiles[0]);
-            setError(''); // Clear previous errors
+            setError(''); 
         }
     }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
-            'application/pdf': ['.pdf'],
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-        },
+    'application/pdf': ['.pdf'], // ✅ Only allow PDF files
+  },
         multiple: false,
     });
 
-    const handleAnalysis = async () => {
-        if (!jobDomain || !resumeFile) {
-            setError('Please provide both a job domain and a resume file.');
-            return;
-        }
-        setError('');
-        setIsLoading(true);
-        setAnalysisResult(null);
-
-        const result = await mockAnalyzeResumeAPI(jobDomain, resumeFile);
-        
-        if (result.success) {
-            setAnalysisResult(result.data);
-        } else {
-            setError(result.error || 'An unknown error occurred.');
-        }
-
-        setIsLoading(false);
-    };
     
     const handleReset = () => {
         setJobDomain('');
@@ -189,7 +156,7 @@ const ResumeAnalyzerPage = () => {
                                     {...getRootProps()}
                                     className={`border-2 border-dashed border-slate-600 rounded-xl p-8 text-center cursor-pointer transition-colors duration-300 ${isDragActive ? 'bg-slate-700 border-cyan-400' : 'hover:bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100'}`}
                                 >
-                                    <input {...getInputProps()} />
+                                    <input {...getInputProps()}  />
                                     <div className="flex flex-col items-center justify-center text-slate-400">
                                         <UploadCloud className="w-12 h-12 mb-4 text-slate-500" />
                                         {isDragActive ? (
@@ -197,7 +164,7 @@ const ResumeAnalyzerPage = () => {
                                         ) : (
                                             <p>Drag & drop your resume here, or click to select a file</p>
                                         )}
-                                        <p className="text-sm mt-1">Supported formats: PDF, DOCX</p>
+                                        <p className="text-sm mt-1">Supported formats: PDF</p>
                                     </div>
                                 </div>
                                 {resumeFile && (
@@ -215,7 +182,7 @@ const ResumeAnalyzerPage = () => {
 
                             {/* Analyze Button */}
                             <button
-                                onClick={handleAnalysis}
+                                onClick={handleSubmit}
                                 disabled={!jobDomain || !resumeFile}
                                 className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:from-blue-500 hover:to-cyan-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 disabled:shadow-none"
                             >
@@ -237,14 +204,14 @@ const ResumeAnalyzerPage = () => {
 
                     {/* Results Display */}
                     {analysisResult && (
-                        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-2xl shadow-blue-900/20 animate-fade-in">
-                            <h2 className="text-3xl font-bold text-center mb-8 text-slate-200">Analysis Complete</h2>
+                        <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-2xl shadow-blue-900/20 animate-fade-in">
+                            <h2 className="text-3xl font-bold text-center mb-8 text-indigo-600">Analysis Complete</h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                                 <div className="md:col-span-1 flex justify-center">
                                     <AtsScoreCircle score={analysisResult.atsScore} />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <h3 className="text-2xl font-semibold text-cyan-300 mb-4">Detailed Feedback</h3>
+                                    <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Detailed Feedback</h3>
                                     <div className="space-y-4">
                                         {analysisResult.feedback.map((item, index) => (
                                             <div key={index} className="flex items-start gap-4 p-4 bg-slate-800 rounded-lg">

@@ -263,7 +263,7 @@ const InterviewPage = () => {
       recognitionRef.current = null;
     }
     setTranscript("");
-  }, 4000);
+  }, 2000);
 
   const handlecallend = async () => {
     const profileminutesleft = parseFloat(
@@ -428,6 +428,9 @@ const InterviewPage = () => {
               {msg}
             </p>
           ))}
+        </div>
+        <div className="bg-white max-w-3xl mx-auto w-full rounded-lg p-4 shadow-md overflow-y-auto max-h-64">
+          {transcript}
         </div>
       </main>
     </div>

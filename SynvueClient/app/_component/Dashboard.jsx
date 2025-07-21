@@ -63,7 +63,7 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6 pt-[80px]">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 mb-8">
         <div className="mb-4 sm:mb-0">
           <h2 className="text-xl sm:text-2xl font-bold text-indigo-700">
             Welcome, {user?.firstName || "User"} 👋
@@ -77,7 +77,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* These cards are already responsive and remain unchanged */}
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
+        <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">
             <FaMicrophoneAlt /> Create Interview
           </h3>
@@ -91,7 +91,7 @@ const Dashboard = () => {
             Create Now
           </button>
         </div>
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
+        <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">
             <InsightsIcon /> Analyzer
           </h3>
@@ -107,7 +107,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
+      <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
         <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-4 flex items-center gap-2">
           <FaHistory /> Previous Interviews
         </h3>
@@ -124,11 +124,11 @@ const Dashboard = () => {
         ) : (
           <div>
             {/* START: RESPONSIVE CAROUSEL/GRID CONTAINER */}
-            <div className="flex snap-x snap-mandatory overflow-x-auto space-x-4 pb-4 md:grid md:grid-cols-2 md:gap-6 md:space-x-0 xl:grid-cols-3">
+            <div className=" flex snap-x snap-mandatory overflow-x-auto space-x-4 pb-4 md:grid md:grid-cols-2 md:gap-6 md:space-x-0 xl:grid-cols-3">
               {paginatedInterviews.map((val) => (
                 <div 
                   key={val.createdAt} 
-                  className="flex-shrink-0 w-4/5 snap-start rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm md:w-auto"
+                  className="flex-shrink-0 w-4/5 snap-start rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 shadow-sm md:w-auto"
                 >
                   <h4 className="font-semibold text-indigo-700 truncate">
                     {val.domain} Interview

@@ -49,7 +49,7 @@ const Sidebar = () => {
   return (
     <>
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col justify-between transform transition-transform duration-300 ${
+        className={`fixed top-0 left-0 h-full w-64 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 shadow-lg z-40 p-6 flex flex-col justify-between transform transition-transform duration-300 ${
           view ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >

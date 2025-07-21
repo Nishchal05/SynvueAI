@@ -1,19 +1,18 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-import User from '@/app/modal/usermodal'
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { v4 as uuidv4 } from 'uuid';
+import User from '@/app/modal/usermodal';
 import dbconnect from "@/app/DBConnection";
 
-import { v4 as uuidv4 } from 'uuid';
 export async function POST(req) {
   try {
     await dbconnect();
     const { jobPosition, description, duration, interviewType, useremail, username } = await req.json();
 
     if (!jobPosition || !description || !duration || !interviewType || !useremail || !username) {
-      console.log( jobPosition, description, duration, interviewType, useremail, username)
       return NextResponse.json({ error: "Missing input fields" }, { status: 400 });
     }
-    if (!process.env.OPENROUTE_API) throw new Error("Missing OPENROUTE_API env var");
+
     const prompt = process.env.NEXT_PUBLIC_PROMPT;
     if (!prompt) {
       return NextResponse.json({ error: "Prompt not set in environment" }, { status: 500 });
@@ -25,26 +24,22 @@ export async function POST(req) {
       .replace('{{duration}}', duration)
       .replace('{{jobDescription}}', description);
 
-    const openai = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTE_API,
-    });
-
-    const completion = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-exp:free",
-      messages: [{ role: "user", content: finalprompt }],
-    });
-
-    const message = completion?.choices?.[0]?.message;
-    if (!message || !message.content) {
-      return NextResponse.json({ error: "No response from model" }, { status: 500 });
+    if (!process.env.Gemini_API_KEY) {
+      return NextResponse.json({ error: "Missing GOOGLE_API_KEY" }, { status: 500 });
     }
 
-    let content = message.content.trim();
+    const genAI = new GoogleGenerativeAI(process.env.Gemini_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+    const result = await model.generateContent(finalprompt);
+    const text = result.response.text();
+
+    // Parse the response
+    let content = text.trim();
     if (content.startsWith("```json") || content.startsWith("```")) {
       content = content.replace(/```json|```/g, "").trim();
     }
+
     let parsedQuestions = [];
     try {
       const parsed = JSON.parse(content);
@@ -53,6 +48,7 @@ export async function POST(req) {
       console.error("Failed to parse model response JSON:", err);
       return NextResponse.json({ error: "Invalid AI response format" }, { status: 500 });
     }
+
     const interviewDurationMinutes = parseInt(duration);
     const expiryDate = new Date(Date.now() + (interviewDurationMinutes + 10) * 60 * 1000);
 
@@ -66,6 +62,7 @@ export async function POST(req) {
 
     let user = await User.findOne({ email: useremail });
     let interviewId = uuidv4();
+
     if (!user) {
       user = await User.create({
         name: username,
@@ -87,9 +84,10 @@ export async function POST(req) {
       user.interviews.interviewData = new Map(Object.entries(updatedData));
       user.interviews.totalCreated = total + 1;
       user.markModified("interviews");
-      
-      await user.save();      
+
+      await user.save();
     }
+
     return NextResponse.json({
       success: true,
       interview: parsedQuestions,
@@ -98,7 +96,7 @@ export async function POST(req) {
     });
 
   } catch (error) {
-    console.error("AI Modal Error:", error);
+    console.error("Gemini Modal Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
