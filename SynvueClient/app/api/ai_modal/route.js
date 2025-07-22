@@ -23,9 +23,8 @@ export async function POST(req) {
       .replace('{{type}}', interviewType)
       .replace('{{duration}}', duration)
       .replace('{{jobDescription}}', description);
- console.log(!process.env.Gemini_API_KEY);
-    if (!process.env.Gemini_API_KEY) {
-     
+    if (!process.env.GEMINI_API_KEY) {
+      console.log(!process.env.GEMINI_API_KEY);
       return NextResponse.json({ error: "Missing GOOGLE_API_KEY" }, { status: 500 });
     }
 
