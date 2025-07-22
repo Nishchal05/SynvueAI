@@ -13,8 +13,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "Missing input fields" }, { status: 400 });
     }
 
-    const prompt = process.env.NEXT_PUBLIC_PROMPT;
-    console.log(NEXT_PUBLIC_PROMPT);
+    const prompt = `You are an expert interviewer. Based on the following inputs, generate a concise and high-quality list of interview questions: Job Title: {{jobTitle}} Job Description:{{jobDescription}} Interview Duration:{{duration}}Interview Type: {{type}}Your task:Analyze the job description to identify key responsibilities, required skills, and expected experience. Based on the interview duration, generate a time-optimized set of questions. For example, for a 4-minute interview, create only 5–6 concise and focused questions. Adjust the number and depth of questions appropriately for longer durations. Ensure the questions reflect the tone and structure of a real-life {{type}} interview.🧩 Format your response in RAW JSON only (no Markdown, no code block):{"interviewQuestions": [{"question": "...", "type": "Technical/Behavioral/Experience/Problem Solving/HR ROUND"}]}🎯 Goal: Create a structured, relevant, and time-balanced interview plan for the {{jobTitle}} role.`;
     if (!prompt) {
       return NextResponse.json({ error: "Prompt not set in environment" }, { status: 500 });
     }
