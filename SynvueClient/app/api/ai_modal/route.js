@@ -5,8 +5,8 @@ import User from '@/app/modal/usermodal';
 import dbconnect from "@/app/DBConnection";
 
 export async function POST(req) {
+  await dbconnect();
   try {
-    await dbconnect();
     const { jobPosition, description, duration, interviewType, useremail, username } = await req.json();
 
     if (!jobPosition || !description || !duration || !interviewType || !useremail || !username) {
