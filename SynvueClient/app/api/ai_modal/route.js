@@ -17,7 +17,6 @@ export async function POST(req) {
     if (!prompt) {
       return NextResponse.json({ error: "Prompt not set in environment" }, { status: 500 });
     }
-    console.log(prompt);
     const finalprompt = prompt
       .replace('{{jobTitle}}', jobPosition)
       .replace('{{type}}', interviewType)

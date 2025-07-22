@@ -6,7 +6,7 @@ import Dashboard from './_component/Dashboard';
 const Page = async () => {
 const user = await currentUser();
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="h-100vh flex ">
       {!user ? (
         <>
           <Sidebar />
@@ -15,7 +15,7 @@ const user = await currentUser();
           </main>
         </>
       ) : (
-        <main className="flex justify-center md:ml-64 md:mt-18 p-4 items-center w-full h-100vh text-xl text-black">
+        <main className="flex justify-center md:ml-64 md:mt-18 p-4 items-center w-full h-100vh bg-transparent text-xl text-black">
         <Sidebar/>
         <Dashboard/>
         </main>
