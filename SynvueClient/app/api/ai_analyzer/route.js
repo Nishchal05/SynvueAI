@@ -21,7 +21,7 @@ export async function POST(req) {
     
     let resumeText;
     try {
-      const data = await pdf(buffer);
+      const data = await pdf(buffer,{});
       resumeText = data.text;
     } catch (pdfError) {
       console.error("PDF parsing error:", pdfError);

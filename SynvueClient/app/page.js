@@ -15,7 +15,7 @@ const user = await currentUser();
           </main>
         </>
       ) : (
-        <main className="flex justify-center md:ml-64 md:mt-18 p-4 items-center w-full h-full text-xl text-black">
+        <main className="flex justify-center md:ml-64 md:mt-18 p-4 items-center w-full h-100vh text-xl text-black">
         <Sidebar/>
         <Dashboard/>
         </main>
