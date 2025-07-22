@@ -5,8 +5,8 @@ import User from '@/app/modal/usermodal';
 import dbconnect from "@/app/DBConnection";
 
 export async function POST(req) {
-  await dbconnect();
   try {
+    await dbconnect();
     const { jobPosition, description, duration, interviewType, useremail, username } = await req.json();
 
     if (!jobPosition || !description || !duration || !interviewType || !useremail || !username) {
@@ -14,6 +14,7 @@ export async function POST(req) {
     }
 
     const prompt = process.env.NEXT_PUBLIC_PROMPT;
+    console.log(NEXT_PUBLIC_PROMPT);
     if (!prompt) {
       return NextResponse.json({ error: "Prompt not set in environment" }, { status: 500 });
     }
@@ -23,8 +24,9 @@ export async function POST(req) {
       .replace('{{type}}', interviewType)
       .replace('{{duration}}', duration)
       .replace('{{jobDescription}}', description);
-
+ console.log(!process.env.Gemini_API_KEY);
     if (!process.env.Gemini_API_KEY) {
+     
       return NextResponse.json({ error: "Missing GOOGLE_API_KEY" }, { status: 500 });
     }
 
