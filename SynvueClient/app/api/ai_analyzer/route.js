@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import pdf from "pdf-parse";
 
-export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function POST(req) {
   try {
