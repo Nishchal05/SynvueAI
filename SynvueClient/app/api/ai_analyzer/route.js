@@ -33,33 +33,39 @@ export async function POST(req) {
     }
 
     const prompt = `
-    You are an expert AI ATS (Applicant Tracking System) resume analyzer.
-    Evaluate how well the candidate's resume matches the provided job description.
-    
-    🔧 Instructions:
-    - Give an **ATS score** between 0 to 100. Be very strict in scoring:
-      - Only assign 95+ if the resume is exceptionally aligned with the job description with no major issues.
-      - A score of 70–90 means the resume is relevant but could use improvement.
-      - Scores below 70 reflect weak alignment or significant gaps.
-    - Provide 3 to 5 **bullet points** of feedback.
-    - Include both **positive and negative** aspects.
-    - Highlight **missing keywords**, **formatting issues**, or **relevance of experience**.
-    
-    📄 Format your answer strictly in JSON like this:
-    
-    {
-      "atsScore": number,
-      "feedback": [
-        { "title": "string", "suggestion": "string", "isPositive": boolean },
-        ...
-      ]
-    }
-    
-    👨‍💼 Job Description:
-    """${jobDescription}"""
-    
-    📄 Resume Text:
-    """${resumeText}"""
+   You are an expert AI ATS (Applicant Tracking System) resume analyzer.
+Evaluate how well the candidate's resume aligns with the provided job description.
+
+🔧 Instructions:
+- Assign an **ATS score** between 0 and 100.
+- Be **very strict**:
+  - Only assign 95+ if the resume is **exceptionally aligned**: excellent formatting, complete keyword match, clearly relevant and recent experience.
+  - Assign **70–90** for resumes with relevance but **missing key details**, weak formatting, or generic achievements.
+  - Assign **below 70** if:
+    - Experience doesn't clearly match the job
+    - Important skills or keywords are missing
+    - Resume formatting is poor or content is too general
+
+- Provide **3 to 5 bullet points** of feedback:
+  - Mix of positive and negative
+  - Mention **missing keywords**, **formatting issues**, or **relevance of experience**
+  - Do NOT be lenient — give honest, critical feedback
+
+📄 Format your answer strictly in JSON like this:
+
+{
+  "atsScore": number,
+  "feedback": [
+    { "title": "string", "suggestion": "string", "isPositive": boolean },
+    ...
+  ]
+}
+
+👨‍💼 Job Description:
+"""${jobDescription}"""
+
+📄 Resume Text:
+"""${resumeText}"""
     `;    
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });

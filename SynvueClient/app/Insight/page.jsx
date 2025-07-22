@@ -214,7 +214,7 @@ const ResumeAnalyzerPage = () => {
                                     <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Detailed Feedback</h3>
                                     <div className="space-y-4">
                                         {analysisResult.feedback.map((item, index) => (
-                                            <div key={index} className="flex items-start gap-4 p-4 bg-slate-800 rounded-lg">
+                                            <div key={index} className="flex items-start gap-4 p-4 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-lg">
                                                 <div>
                                                     {item.isPositive ? (
                                                         <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
@@ -223,7 +223,7 @@ const ResumeAnalyzerPage = () => {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-bold text-slate-200">{item.title}</h4>
+                                                    <h4 className="font-bold text-slate-700">{item.title}</h4>
                                                     <p className="text-slate-400 text-sm">{item.suggestion}</p>
                                                 </div>
                                             </div>
