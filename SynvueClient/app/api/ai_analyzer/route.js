@@ -33,24 +33,22 @@ export async function POST(req) {
     }
 
     const prompt = `
-   You are an expert AI ATS (Applicant Tracking System) resume analyzer.
-Evaluate how well the candidate's resume aligns with the provided job description.
-
+ You are an expert AI ATS (Applicant Tracking System) resume analyzer.
+Evaluate how well the candidate’s resume aligns with the provided job description.
+🛑 Ignore all timeline or date-related information. You do not have real-time data. Focus only on content, formatting, and keyword alignment.
 🔧 Instructions:
-- Assign an **ATS score** between 0 and 100.
-- Be **very strict**:
-  - Only assign 95+ if the resume is **exceptionally aligned**: excellent formatting, complete keyword match, clearly relevant and recent experience.
-  - Assign **70–90** for resumes with relevance but **missing key details**, weak formatting, or generic achievements.
-  - Assign **below 70** if:
-    - Experience doesn't clearly match the job
-    - Important skills or keywords are missing
-    - Resume formatting is poor or content is too general
-
-- Provide **3 to 5 bullet points** of feedback:
-  - Mix of positive and negative
-  - Mention **missing keywords**, **formatting issues**, or **relevance of experience**
-  - Do NOT be lenient — give honest, critical feedback
-
+Assign an ATS score between 0 and 100.
+Be very strict:
+Only assign 95+ if the resume is exceptionally aligned — excellent formatting, strong keyword match, clearly relevant experience.
+Assign 70–90 for resumes with relevance but missing key elements like achievements, proper structure, or keyword variety.
+Assign below 70 if:
+Skills and experience do not align well
+Important keywords are missing
+Formatting is poor or too generic
+📌 Provide 3 to 5 bullet points of feedback:
+Mix of positive and negative points
+Highlight keyword gaps, formatting flaws, and relevance
+Be honest and critical, not lenient
 📄 Format your answer strictly in JSON like this:
 
 {
@@ -60,7 +58,6 @@ Evaluate how well the candidate's resume aligns with the provided job descriptio
     ...
   ]
 }
-
 👨‍💼 Job Description:
 """${jobDescription}"""
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "../_component/Sidebar";
-import { FaSpinner } from "react-icons/fa6";
+import { FaMailchimp, FaSpinner } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
 
@@ -63,7 +63,7 @@ export default function FeedbackForm() {
     <div className="flex min-h-screen bg-blue-50">
       <Sidebar />
       <main className="flex flex-col items-center justify-center w-full px-4 py-12 md:mt-8">
-        <div className="w-full max-w-2xl bg-white p-8 md:p-12 rounded-3xl shadow-2xl">
+        <div className="w-full max-w-2xl bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-8 md:p-12 rounded-3xl shadow-2xl">
           <h2 className="text-3xl md:text-4xl font-extrabold text-blue-700 text-center mb-8">
             Feedback Form
           </h2>
@@ -98,6 +98,7 @@ export default function FeedbackForm() {
                   htmlFor="mail"
                   className="block text-blue-700 font-medium mb-1"
                 >
+                
                   Email
                 </label>
                 <input
@@ -116,7 +117,7 @@ export default function FeedbackForm() {
                   htmlFor="message"
                   className="block text-blue-700 font-medium mb-1"
                 >
-                  Your Feedback
+                  Bug Report
                 </label>
                 <textarea
                   name="message"
@@ -132,16 +133,16 @@ export default function FeedbackForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex justify-center items-center w-full bg-blue-600 ${
+                className={`flex justify-center items-center w-full bg-gradient-to-br from-indigo-300 via-purple-300 to-pink-300 ${
                   loading
                     ? "opacity-60 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                } text-white font-semibold py-3 rounded-xl transition-all`}
+                } text-gray-800 font-semibold py-3 rounded-xl transition-all`}
               >
                 {loading ? (
                   <FaSpinner className="animate-spin" />
                 ) : (
-                  <span>Submit Feedback</span>
+                  <span>Submit Bug</span>
                 )}
               </button>
             </form>
