@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ArrowRight, UploadCloud, FileText, Loader, CheckCircle, AlertTriangle } from 'lucide-react';
 import Sidebar from '../_component/Sidebar';
+import { toast } from 'sonner';
+import { useUser } from '@clerk/nextjs';
+import { DataContext } from '../DataProvider';
   
 const AtsScoreCircle = ({ score }) => {
     const sqSize = 160;
@@ -47,14 +50,38 @@ const AtsScoreCircle = ({ score }) => {
     );
 };
 
-
-// Main Page Component
 const ResumeAnalyzerPage = () => {
     const [jobDomain, setJobDomain] = useState('');
     const [resumeFile, setResumeFile] = useState(null);
     const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const {minutes}=useContext(DataContext);
+    const user=useUser();
+    console.log(user);
+    const email = user?.user?.primaryEmailAddress?.emailAddress;
+    const handleminutes = async () => {
+        const profileminutesleft = minutes - 0.5;
+        console.log(email);
+        try {
+          const response = await fetch("/api/createuser", {
+            method: "PUT",
+            body: JSON.stringify({
+              minutes: profileminutesleft,
+              email: email,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to update minutes");
+          }
+        } catch (error) {
+          toast.error(error.message || "Error updating minutes");
+        }
+      };
+      
     const handleSubmit = async (e) => {
         e.preventDefault();
       
@@ -82,6 +109,7 @@ const ResumeAnalyzerPage = () => {
           
           const result = await res.json();
           setAnalysisResult(result);
+          handleminutes();
         } catch (err) {
           console.error("Error submitting form", err);
           setError(err.message || "Failed to analyze resume");

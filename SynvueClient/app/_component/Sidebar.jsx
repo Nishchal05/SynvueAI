@@ -29,9 +29,9 @@ const Sidebar = () => {
   const user=useUser();
   const router=useRouter();
   const userdata = async () => {
-    if (!user?.primaryEmailAddress?.emailAddress) return;
+    if (!user?.user?.primaryEmailAddress?.emailAddress) return;
     try {
-      const response = await fetch(`/api/createuser?email=${user.primaryEmailAddress.emailAddress}`);
+      const response = await fetch(`/api/createuser?email=${user.user.primaryEmailAddress.emailAddress}`);
       const result = await response.json();
       setminutes(result?.user?.minutes || 7);
       setuserprofile(result);
@@ -41,7 +41,7 @@ const Sidebar = () => {
   };
   
   useEffect(() => {
-    if (user?.primaryEmailAddress?.emailAddress) {
+    if (user?.user?.primaryEmailAddress?.emailAddress) {
       userdata();
     }
   }, []);
