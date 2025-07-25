@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 import { DataContext } from "../DataProvider";
 const Sidebar = () => {
   const { view, setView, minutes,setminutes, setuserprofile} = useContext(DataContext);
-  const user=useUser();
+  const {user,isLoaded }=useUser();
   const router=useRouter();
   const userdata = async () => {
     if (!user?.user?.primaryEmailAddress?.emailAddress) return;
@@ -44,7 +44,7 @@ const Sidebar = () => {
     if (user?.user?.primaryEmailAddress?.emailAddress) {
       userdata();
     }
-  }, []);
+  }, [user]);
   
   return (
     <>

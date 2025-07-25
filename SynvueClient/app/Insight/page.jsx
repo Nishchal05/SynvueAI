@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ArrowRight, UploadCloud, FileText, Loader, CheckCircle, AlertTriangle } from 'lucide-react';
 import Sidebar from '../_component/Sidebar';
@@ -56,13 +56,27 @@ const ResumeAnalyzerPage = () => {
     const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const {minutes}=useContext(DataContext);
+    const {minutes,setminutes}=useContext(DataContext);
     const user=useUser();
-    console.log(user);
     const email = user?.user?.primaryEmailAddress?.emailAddress;
+    const userdata = async () => {
+        if (!user?.user?.primaryEmailAddress?.emailAddress) return;
+        try {
+          const response = await fetch(`/api/createuser?email=${user.user.primaryEmailAddress.emailAddress}`);
+          const result = await response.json();
+          setminutes(result?.user?.minutes || 7);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+      
+      useEffect(() => {
+        if (user?.user?.primaryEmailAddress?.emailAddress) {
+          userdata();
+        }
+      }, [user]);
     const handleminutes = async () => {
         const profileminutesleft = minutes - 0.5;
-        console.log(email);
         try {
           const response = await fetch("/api/createuser", {
             method: "PUT",
@@ -77,6 +91,7 @@ const ResumeAnalyzerPage = () => {
           if (!response.ok) {
             throw new Error("Failed to update minutes");
           }
+          setminutes(profileminutesleft);
         } catch (error) {
           toast.error(error.message || "Error updating minutes");
         }

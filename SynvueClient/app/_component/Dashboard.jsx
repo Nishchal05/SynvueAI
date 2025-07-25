@@ -6,17 +6,17 @@ import { FaMicrophoneAlt, FaHistory } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import InsightsIcon from "@mui/icons-material/Insights";
 import { DataContext } from "../DataProvider";
-import { FaLeftLong, FaRightLong } from "react-icons/fa6";
+import { FaLeftLong, FaRightLong, FaSpinner } from "react-icons/fa6";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const { user } = useUser();
   const router = useRouter();
-  const { setminutes } = useContext(DataContext);
+  const { setminutes, minutes } = useContext(DataContext);
   const [interviewArray, setInterviewArray] = useState([]);
   const [openCardId, setOpenCardId] = useState(null);
-  
-  // No changes to state or data fetching
   const [currentPage, setCurrentPage] = useState(0);
+  const [loaded, setloaded] = useState(false);
   const itemsPerPage = 6;
 
   const fetchUserData = async () => {
@@ -31,10 +31,14 @@ const Dashboard = () => {
       if (createUserData?.user) {
         setminutes(createUserData.user.minutes);
       }
-
-      const interviewHistoryResponse = await fetch(`/api/createuser?email=${user.primaryEmailAddress.emailAddress}`);
+      const interviewHistoryResponse = await fetch(
+        `/api/createuser?email=${user.primaryEmailAddress.emailAddress}`
+      );
       const interviewHistoryData = await interviewHistoryResponse.json();
-      const interviews = Object.values(interviewHistoryData?.user?.interviews?.interviewData || {});
+      const interviews = Object.values(
+        interviewHistoryData?.user?.interviews?.interviewData || {}
+      );
+      setloaded(true);
       setInterviewArray(interviews);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -58,8 +62,11 @@ const Dashboard = () => {
       setCurrentPage(currentPage - 1);
     }
   };
-  
-  const paginatedInterviews = interviewArray.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const paginatedInterviews = interviewArray.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <div className="h-100vh w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6 pt-[60px]">
@@ -86,7 +93,18 @@ const Dashboard = () => {
           </p>
           <button
             className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition cursor-pointer"
-            onClick={() => router.push("/CreateInterView")}
+            onClick={() => {
+              if (!loaded) {
+                toast(
+                  <span className="flex items-center gap-2">
+                    <FaSpinner className="animate-spin" />
+                    Loading...
+                  </span>
+                );
+                return;
+              }
+              router.push("/CreateInterView");
+            }}
           >
             Create Now
           </button>
@@ -96,12 +114,24 @@ const Dashboard = () => {
             <InsightsIcon /> Analyzer
           </h3>
           <p className="text-gray-600 mb-4 text-sm sm:text-base">
-            Scan. Score. Stand Out — Instantly improve your resume with AI insights.
+            Scan. Score. Stand Out — Instantly improve your resume with AI
+            insights.
           </p>
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition cursor-pointer"
-          onClick={()=>{
-            router.push('/Insight')
-          }}>
+          <button
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition cursor-pointer"
+            onClick={() => {
+              if (!loaded) {
+                toast(
+                  <span className="flex items-center gap-2">
+                    <FaSpinner className="animate-spin" />
+                    Loading...
+                  </span>
+                );
+                return;
+              }
+              router.push("/Insight");
+            }}
+          >
             Get Insights
           </button>
         </div>
@@ -126,14 +156,17 @@ const Dashboard = () => {
             {/* START: RESPONSIVE CAROUSEL/GRID CONTAINER */}
             <div className=" flex snap-x snap-mandatory overflow-x-auto space-x-4 pb-4 md:grid md:grid-cols-2 md:gap-6 md:space-x-0 xl:grid-cols-3">
               {paginatedInterviews.map((val) => (
-                <div 
-                  key={val.createdAt} 
+                <div
+                  key={val.createdAt}
                   className="flex-shrink-0 w-4/5 snap-start rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 shadow-sm md:w-auto"
                 >
                   <h4 className="font-semibold text-indigo-700 truncate">
                     {val.domain} Interview
                   </h4>
-                  <p className="text-gray-600 text-sm">Duration: <span className="font-medium">{val.duration} minutes</span></p>
+                  <p className="text-gray-600 text-sm">
+                    Duration:{" "}
+                    <span className="font-medium">{val.duration} minutes</span>
+                  </p>
                   <p className="text-gray-600 text-sm">
                     Created:{" "}
                     <span className="font-medium">
@@ -141,14 +174,22 @@ const Dashboard = () => {
                     </span>
                   </p>
                   <button
-                    onClick={() => setOpenCardId(openCardId === val.createdAt ? null : val.createdAt)}
+                    onClick={() =>
+                      setOpenCardId(
+                        openCardId === val.createdAt ? null : val.createdAt
+                      )
+                    }
                     className="mt-3 w-full rounded-md bg-indigo-600 px-4 py-2 text-sm text-white transition hover:bg-indigo-700"
                   >
-                    {openCardId === val.createdAt ? "Hide Questions" : "View Questions"}
+                    {openCardId === val.createdAt
+                      ? "Hide Questions"
+                      : "View Questions"}
                   </button>
                   {openCardId === val.createdAt && (
                     <div className="mt-4 border-t pt-3">
-                      <h5 className="mb-2 text-sm font-semibold text-indigo-600">Questions:</h5>
+                      <h5 className="mb-2 text-sm font-semibold text-indigo-600">
+                        Questions:
+                      </h5>
                       <ul className="list-disc space-y-1 pl-5 text-sm text-gray-700">
                         {val.questions.map((q, idx) => (
                           <li key={idx}>{q?.question || "No question text"}</li>
@@ -160,7 +201,7 @@ const Dashboard = () => {
               ))}
             </div>
             {/* END: RESPONSIVE CAROUSEL/GRID CONTAINER */}
-            
+
             {interviewArray.length > itemsPerPage && (
               <div className="mt-6 flex justify-center gap-4">
                 <button
@@ -172,7 +213,9 @@ const Dashboard = () => {
                 </button>
                 <button
                   onClick={handleNextPage}
-                  disabled={(currentPage + 1) * itemsPerPage >= interviewArray.length}
+                  disabled={
+                    (currentPage + 1) * itemsPerPage >= interviewArray.length
+                  }
                   className="rounded-md bg-indigo-600 p-2 text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
                 >
                   <FaRightLong />
