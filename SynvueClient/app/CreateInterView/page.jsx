@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Sidebar from "../_component/Sidebar";
 import { Progress } from "@/components/ui/progress";
 import { useUser } from "@clerk/nextjs";
@@ -14,7 +14,7 @@ const Page = () => {
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(33.33);
   const [interviewid, setinterviewid] = useState();
-  const { minutes, setinterviewduration} = useContext(DataContext);
+  const { minutes, setinterviewduration, setminutes } = useContext(DataContext);
   const [useremail, setuseremail] = useState();
   const { user } = useUser();
   const [formData, setFormData] = useState({
@@ -25,6 +25,25 @@ const Page = () => {
     useremail: user?.primaryEmailAddress?.emailAddress,
     username: user?.fullName,
   });
+  console.log(user?.primaryEmailAddress?.emailAddress);
+  const userdata = async () => {
+    if (!user?.primaryEmailAddress?.emailAddress) return;
+    try {
+      const response = await fetch(
+        `/api/createuser?email=${user.primaryEmailAddress.emailAddress}`
+      );
+      const result = await response.json();
+      setminutes(result?.user?.minutes || 7);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  useEffect(() => {
+    console.log("hp:", user?.primaryEmailAddress?.emailAddress);
+    if (user?.primaryEmailAddress?.emailAddress) {
+      userdata();
+    }
+  }, [user]);
   const nextStep = () => {
     setStep((prev) => Math.min(prev + 1, 3));
     setProgress((prev) => Math.min(prev + 33.33, 100));
@@ -51,7 +70,7 @@ const Page = () => {
           return;
         }
         setFormData((prev) => ({ ...prev, [name]: numericValue }));
-        setinterviewduration(numericValue); 
+        setinterviewduration(numericValue);
       }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -79,7 +98,7 @@ const Page = () => {
       console.error(error);
     }
   };
-  
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
@@ -178,39 +197,60 @@ const Page = () => {
                   <option value="Coding Challenge">⌨️ Coding Challenge</option>
                 </select>
               </div>
-
-              <div className="flex justify-between">
-                <button
-                  onClick={prevStep}
-                  className="border border-indigo-500 text-indigo-600 px-6 py-2 rounded-md hover:bg-indigo-50 transition"
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={handleInterviewLink}
-                  disabled={loading || !formData.interviewType}
-                  className={` text-white px-6 py-2 rounded-md transition ${
-                    !formData.interviewType || loading
-                      ? "bg-blue-400 cursor-not-allowed"
-                      : "bg-indigo-600 hover:bg-indigo-700"
-                  }`}
-                >
-                  {loading ? (
-                    <span className="flex">
-                      <span className="animate-bounce">
-                        <Dot />
+              <div className=" flex-col">
+                <div className="flex justify-between">
+                  <button
+                    onClick={prevStep}
+                    className="border border-indigo-500 text-indigo-600 px-6 py-2 rounded-md hover:bg-indigo-50 transition"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    onClick={handleInterviewLink}
+                    disabled={loading || !formData.interviewType}
+                    className={` text-white px-6 py-2 rounded-md transition ${
+                      !formData.interviewType || loading
+                        ? "bg-blue-400 cursor-not-allowed"
+                        : "bg-indigo-600 hover:bg-indigo-700"
+                    }`}
+                  >
+                    {loading ? (
+                      <span className="flex">
+                        <span className="animate-bounce">
+                          <Dot />
+                        </span>
+                        <span className="animate-bounce">
+                          <Dot />
+                        </span>
+                        <span className="animate-bounce">
+                          <Dot />
+                        </span>
                       </span>
-                      <span className="animate-bounce">
-                        <Dot />
-                      </span>
-                      <span className="animate-bounce">
-                        <Dot />
-                      </span>
+                    ) : (
+                      "Generate Link"
+                    )}
+                  </button>
+                </div>
+                <div className="bg-yellow-100 mt-5 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg max-w-xl mx-auto flex items-start gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 flex-shrink-0 mt-1"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+                  </svg>
+                  <div className="text-sm">
+                    <strong>⚠️ Note:</strong> Speech recognition might{" "}
+                    <span className="font-semibold">
+                      not work properly in Safari or Firefox.
                     </span>
-                  ) : (
-                    "Generate Link"
-                  )}
-                </button>
+                    <br />
+                    For best experience, use{" "}
+                    <span className="font-semibold">Google Chrome</span> or{" "}
+                    <span className="font-semibold">Microsoft Edge</span>.
+                  </div>
+                </div>
               </div>
             </div>
           )}
