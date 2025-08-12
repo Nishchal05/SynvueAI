@@ -7,6 +7,7 @@ import {
 } from '@clerk/nextjs'
 import Navbar from "./_component/Navbar";
 import DataProvider from "./DataProvider";
+<script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

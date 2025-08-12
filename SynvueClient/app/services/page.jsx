@@ -69,20 +69,18 @@ export default function App() {
               <path d="M8 16.5v-5"></path><path d="M16 16.5v-5"></path>
           </svg>
         ),
-        title: 'BridgeTalk AI',
+        title: 'NoLangBarrier',
         description: 'The future of integrated conversation. Seamlessly connect and communicate across all your favorite platforms with our unified AI solution.',
         ctaText: 'Launching Soon',
         link:'/',
         isComingSoon: true,
       },
     ];
-  
     return (
       <div className="flex min-h-screen bg-gray-100">
         <Sidebar/>
         <div className=" md:ml-64 min-h-screen w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 font-sans text-gray-800">
         <div className="container mx-auto px-4 py-16 sm:py-24">
-          {/* Header Section */}
           <header className="text-center mb-16">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight">
               Unlock Your <span className="text-indigo-600">Career Potential</span>
@@ -91,8 +89,6 @@ export default function App() {
               We provide cutting-edge AI tools designed to give you a competitive edge in your professional journey.
             </p>
           </header>
-  
-          {/* Services Grid */}
           <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
             {services.map((service, index) => (
               <ServiceCard key={index} {...service} />

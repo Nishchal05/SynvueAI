@@ -55,16 +55,15 @@ export async function GET(req) {
 export async function PUT(req) {
   try {
     const { minutes, email } = await req.json();
+    console.log(minutes, email)
     if (!minutes || !email) {
       return NextResponse.json({ message: "Credential missing!" }, { status: 400 });
     }
-
     const response = await User.findOneAndUpdate(
       { email },
       { $set: { minutes: Number(minutes) } },
       { new: true }
     );
-
     if (response) {
       return NextResponse.json({ message: "Update successful" }, { status: 200 });
     } else {

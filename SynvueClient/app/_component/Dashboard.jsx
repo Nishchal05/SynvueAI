@@ -8,17 +8,25 @@ import InsightsIcon from "@mui/icons-material/Insights";
 import { DataContext } from "../DataProvider";
 import { FaLeftLong, FaRightLong, FaSpinner } from "react-icons/fa6";
 import { toast } from "sonner";
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 const Dashboard = () => {
   const { user } = useUser();
   const router = useRouter();
-  const { setminutes, minutes } = useContext(DataContext);
+  const { setminutes} = useContext(DataContext);
   const [interviewArray, setInterviewArray] = useState([]);
   const [openCardId, setOpenCardId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [loaded, setloaded] = useState(false);
   const itemsPerPage = 6;
-
+ useEffect(() => {
+      AOS.init({
+        duration: 800,
+        easing: "ease-in-out",
+        once: true, 
+      });
+    }, []);
+    
   const fetchUserData = async () => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
     try {
@@ -56,7 +64,6 @@ const Dashboard = () => {
       setCurrentPage(currentPage + 1);
     }
   };
-
   const handlePrevPage = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
@@ -70,7 +77,7 @@ const Dashboard = () => {
 
   return (
     <div className="h-100vh w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6 pt-[60px]">
-      <div className=" flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 mb-8">
+      <div className=" flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 mb-8" data-aos="fade-down">
         <div className="mb-4 sm:mb-0">
           <h2 className="text-xl sm:text-2xl font-bold text-indigo-700">
             Welcome, {user?.firstName || "User"} 👋
@@ -82,7 +89,7 @@ const Dashboard = () => {
         <UserButton afterSignOutUrl="/" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" data-aos="zoom-in">
         {/* These cards are already responsive and remain unchanged */}
         <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">
@@ -137,7 +144,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
+      <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition" data-aos="fade-up">
         <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-4 flex items-center gap-2">
           <FaHistory /> Previous Interviews
         </h3>
@@ -157,8 +164,9 @@ const Dashboard = () => {
             <div className=" flex snap-x snap-mandatory overflow-x-auto space-x-4 pb-4 md:grid md:grid-cols-2 md:gap-6 md:space-x-0 xl:grid-cols-3">
               {paginatedInterviews.map((val) => (
                 <div
-                  key={val.createdAt}
+                  key={val.id || `${val.createdAt}-${Math.random()}`}
                   className="flex-shrink-0 w-4/5 snap-start rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 shadow-sm md:w-auto"
+                  data-aos="flip-left"
                 >
                   <h4 className="font-semibold text-indigo-700 truncate">
                     {val.domain} Interview
@@ -175,17 +183,15 @@ const Dashboard = () => {
                   </p>
                   <button
                     onClick={() =>
-                      setOpenCardId(
-                        openCardId === val.createdAt ? null : val.createdAt
-                      )
-                    }
+  setOpenCardId(openCardId === (val.id || val.createdAt) ? null : (val.id || val.createdAt))
+}
                     className="mt-3 w-full rounded-md bg-indigo-600 px-4 py-2 text-sm text-white transition hover:bg-indigo-700"
                   >
                     {openCardId === val.createdAt
                       ? "Hide Questions"
                       : "View Questions"}
                   </button>
-                  {openCardId === val.createdAt && (
+                  {openCardId === (val.id || val.createdAt) && (
                     <div className="mt-4 border-t pt-3">
                       <h5 className="mb-2 text-sm font-semibold text-indigo-600">
                         Questions:
