@@ -15,7 +15,7 @@ const SingleInterviewSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
-  minutes:{type:Number,default: 7, min: 0},
+  minutes:{type:Number,default: 8, min: 0},
   interviews: {
     totalCreated: { type: Number, default: 0 },
     interviewData: {
