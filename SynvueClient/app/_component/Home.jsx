@@ -7,7 +7,6 @@ import { FaPlay } from "react-icons/fa";
 const Home = () => {
   return (
     <main className="relative w-full h-screen bg-gradient-to-br from-white to-blue-200 p-6 md:p-12 overflow-hidden">
-
       {/* Background Animated Star */}
       <img
         src="/Starimg.png"
@@ -33,13 +32,17 @@ const Home = () => {
           </h1>
           <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
             Practice interviews in a real-world setting. Get AI-driven feedback,
-            track your progress, and walk into your next interview with unbeatable
-            confidence.
+            track your progress, and walk into your next interview with
+            unbeatable confidence.
           </p>
 
           {/* CTA Button */}
           <div className="flex justify-center md:justify-start">
-            <SignUpButton className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full text-lg font-semibold shadow-xl hover:scale-105 transition duration-300 cursor-pointer focus:ring-2 focus:ring-indigo-400">
+            <SignUpButton
+              mode="redirect"
+              signUpUrl="/signup"
+              className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full text-lg font-semibold shadow-xl hover:scale-105 transition duration-300 cursor-pointer focus:ring-2 focus:ring-indigo-400"
+            >
               <div className="flex items-center gap-2">
                 <FaPlay />
                 Start Preparation

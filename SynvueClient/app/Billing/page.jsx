@@ -38,7 +38,6 @@ function useKeyFromApi() {
     };
     fetchKey();
   }, []);
-
   return { key, error };
 }
 const PurchaseButton = ({ price, coins, onPaymentSuccess, onPaymentError, isRazorpayLoaded, off,email,name}) => {
