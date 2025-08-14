@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaLinkedin, FaInstagram, FaXTwitter, FaSpinner } from "react-icons/fa6";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
+import Sidebar from "../_component/Sidebar";
 
 export default function ContactPage() {
   const { user } = useUser();
@@ -61,9 +62,10 @@ export default function ContactPage() {
   return (
     // Main container with the themed gradient, centering the content
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 font-sans">
+    <Sidebar/>
       <div className="w-full max-w-2xl">
         {/* Glassmorphism card effect for a modern look */}
-        <div className="bg-white/50 backdrop-blur-xl rounded-2xl shadow-lg p-8 md:p-12">
+        <div className="bg-white/50 backdrop-blur-xl rounded-2xl shadow-lg p-8 md:p-12 mt-15">
           {/* Header Section */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-800">Get in Touch</h1>
