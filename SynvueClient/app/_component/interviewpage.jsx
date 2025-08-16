@@ -210,11 +210,9 @@ const InterviewPage = () => {
         .filter((result) => result.isFinal)
         .map((result) => result[0].transcript)
         .join("");
-
       setTranscript(interimTranscript || finalTranscript);
       if (finalTranscript) debounceSend(finalTranscript);
     };
-
     recognition.onerror = (event) => {
       if (event.error === "audio-capture") {
         toast.error(

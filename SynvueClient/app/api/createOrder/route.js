@@ -14,8 +14,8 @@ const offersService = [
     {
       coins: 5,
       originalPricePerCoin: 3.5,
-      priceINR: 17,
-      label: "Starter Pack",
+      priceINR: 1700,
+      label: "Starter",
       discount: "₹3.4/coin",
     },
     {

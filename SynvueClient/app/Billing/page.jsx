@@ -152,9 +152,9 @@ export default function BuyCredits() {
       coins: 5,
       originalPricePerCoin: 3.5,
       priceINR: 17,
-      label: "Starter Pack",
-      icon: <Sparkles className="h-6 w-6 text-yellow-600" />,
       discount: "₹3.4/coin",
+      label: "Starter",
+      icon: <Sparkles className="h-6 w-6 text-yellow-600" />,
     },
     {
       coins: 15,
@@ -269,8 +269,6 @@ const handlePaymentSuccess = async ({ razorpay_order_id, razorpay_payment_id, ra
           <p className="text-center text-green-600 text-sm font-medium mb-10">
             ✨ Your purchased credits never expire.
           </p>
-
-          {/* Custom Buy Box */}
           <div className="bg-white rounded-3xl shadow-xl p-6 md:p-10 max-w-lg mx-auto mb-16 border bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
             <h2 className="text-2xl font-bold text-blue-800 mb-6 text-center">Custom Purchase</h2>
             <label htmlFor="coins-input" className="block text-md font-semibold mb-2 text-gray-700">
@@ -291,7 +289,6 @@ const handlePaymentSuccess = async ({ razorpay_order_id, razorpay_payment_id, ra
                 ₹{totalPriceINR} <span className="text-gray-500 text-lg ml-1">(${totalPriceUSD})</span>
               </p>
             </div>
-            {/* Using the reusable PurchaseButton component */}
             <PurchaseButton
               price={parseFloat(totalPriceINR)}
               coins={coins}
@@ -302,8 +299,6 @@ const handlePaymentSuccess = async ({ razorpay_order_id, razorpay_payment_id, ra
               name={user?.user?.fullName}
             />
           </div>
-
-          {/* Offers Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {offers.map((offer, idx) => (
               <div
@@ -334,7 +329,6 @@ const handlePaymentSuccess = async ({ razorpay_order_id, razorpay_payment_id, ra
                 {offer.discount && (
                   <p className="text-sm text-blue-600 mt-1 font-semibold">{offer.discount}</p>
                 )}
-                {/* Using the reusable PurchaseButton component */}
                 <PurchaseButton
                   price={offer.priceINR}
                   coins={offer.coins}

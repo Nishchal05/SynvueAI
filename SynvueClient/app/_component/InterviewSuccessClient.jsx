@@ -16,7 +16,6 @@ const InterviewSuccessClient = ({ interviewId, email, jobPosition, duration }) =
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 px-4 py-6">
       <div className="bg-white shadow-2xl rounded-3xl p-6 sm:p-8 w-full max-w-xl text-center space-y-6">
-        {/* Logo */}
         {logoUrl && (
           <div className="flex justify-center">
             <Image
