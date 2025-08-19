@@ -53,7 +53,6 @@ Scoring (0–100). Use this exact weighted rubric:
 - Role Consistency (no mixed roles): up to 5 pts
   • Deduct if resume mixes unrelated roles (e.g., applying for Software but listing VLSI/ASIC/RTL/Verilog/Cadence/Synopsys-heavy content). 
   • 5 = fully consistent; 0–3 if off-role content appears; call it out and advise removal.
-
 Additional Rules:
 - Be strict. Reserve 95+ only for exceptional alignment across all dimensions.
 - If resume spans 2–3 pages, explicitly advise compressing to 1 page and reduce Length score accordingly.

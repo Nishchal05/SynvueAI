@@ -28,13 +28,9 @@ const InterviewSuccessClient = ({ interviewId, email, jobPosition, duration }) =
           </div>
         )}
         <FaCheckCircle className="text-green-500 text-5xl mx-auto animate-bounce" />
-
-        {/* Title */}
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
           Your AI-Powered Mock Interview is Ready!
         </h1>
-
-        {/* Description */}
         <p className="text-sm sm:text-base text-gray-600">
           Click the link below to start your mock interview. Share it with others or return later to practice.
         </p>
@@ -44,8 +40,6 @@ const InterviewSuccessClient = ({ interviewId, email, jobPosition, duration }) =
           <p><strong>Domain:</strong> {jobPosition}</p>
           <p><strong>Duration:</strong> {duration} minutes</p>
         </div>
-
-        {/* Link Copy Section */}
         <div className="bg-gray-100 rounded-md px-3 py-2 flex items-center justify-between gap-2 overflow-x-auto text-left">
           <a
             href={link}

@@ -99,29 +99,27 @@ const ResumeAnalyzerPage = () => {
       
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
         if (!resumeFile || !jobDomain) {
           alert("Please upload resume and enter job description");
           return;
         }
-      
+        if(minutes<5){
+            toast("Minimum 5 Coins require!!");
+        }
         const formData = new FormData();
         formData.append("resume", resumeFile);
         formData.append("jobDescription", jobDomain);
         setIsLoading(true);
         setError('');
-        
         try {
           const res = await fetch("/api/ai_analyzer", {
             method: "POST",
             body: formData,
           });
-          
           if (!res.ok) {
             const errorData = await res.json();
             throw new Error(errorData.error || "Failed to analyze resume");
           }
-          
           const result = await res.json();
           setAnalysisResult(result);
           handleminutes();
@@ -142,7 +140,7 @@ const ResumeAnalyzerPage = () => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
-    'application/pdf': ['.pdf'], // ✅ Only allow PDF files
+    'application/pdf': ['.pdf'], 
   },
         multiple: false,
     });
@@ -173,7 +171,6 @@ const ResumeAnalyzerPage = () => {
                 </header>
 
                 <main className="max-w-4xl mx-auto">
-                    {/* Conditional Rendering: Show Analyzer Form or Results */}
                     {!analysisResult && !isLoading && (
                         <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-2xl shadow-blue-900/20">
                             <div className="mb-6">
@@ -189,8 +186,6 @@ const ResumeAnalyzerPage = () => {
                                     className="w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 border border-slate-600 rounded-lg px-4 py-3 text-black placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
                                 />
                             </div>
-
-                            {/* Step 2: Upload Resume */}
                             <div className="mb-8">
                                 <label className="block text-lg font-semibold mb-2 text-slate-700">
                                     Step 2: Upload Your Resume
