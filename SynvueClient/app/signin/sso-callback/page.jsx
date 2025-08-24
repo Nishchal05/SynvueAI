@@ -1,4 +1,5 @@
 // app/signup/sso-callback/page.tsx
+"use client"
 import { Smile } from "lucide-react";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
