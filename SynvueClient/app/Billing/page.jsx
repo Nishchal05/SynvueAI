@@ -136,7 +136,7 @@ export default function BuyCredits() {
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState('success');
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-  const pricePerCoin = 3.5;
+  const pricePerCoin = 2;
   const INR_TO_USD_RATE = 87.50;
   const user=useUser();
   const convertInrToUsd = (inrAmount) => {
@@ -150,34 +150,34 @@ export default function BuyCredits() {
   const offers = [
     {
       coins: 5,
-      originalPricePerCoin: 3.5,
-      priceINR: 17,
-      discount: "₹3.4/coin",
+      originalPricePerCoin: 2,
+      priceINR: 8,
+      discount: "₹2/coin",
       label: "Starter",
       icon: <Sparkles className="h-6 w-6 text-yellow-600" />,
     },
     {
       coins: 15,
-      originalPricePerCoin: 3.5,
-      priceINR: 42,
-      discount: "20% OFF",
+      originalPricePerCoin: 2,
+      priceINR: 25,
+      discount: "16% OFF",
       label: "Pro",
       icon: <Zap className="h-6 w-6 text-purple-600" />,
     },
     {
       coins: 45,
-      originalPricePerCoin: 3.5,
-      priceINR: 125,
-      discount: "20% OFF",
+      originalPricePerCoin: 2,
+      priceINR: 74,
+      discount: "16% OFF",
       label: "Advanced",
       icon: <Crown className="h-6 w-6 text-green-600" />,
     },
     {
       coins: 100,
-      originalPricePerCoin: 3.5,
-      priceINR: 290,
+      originalPricePerCoin: 2,
+      priceINR: 160,
       bonus: "+10 Coins Free!",
-      discount: "25% OFF",
+      discount: "20% OFF",
       label:"Galaxy",
       icon: <Gift className="h-6 w-6 text-blue-600" />,
     },
