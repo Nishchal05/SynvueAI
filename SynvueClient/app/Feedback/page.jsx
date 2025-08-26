@@ -63,13 +63,13 @@ export default function FeedbackForm() {
     <div className="flex min-h-screen bg-blue-50">
       <Sidebar />
       <main className="flex flex-col items-center justify-center w-full px-4 py-12 md:mt-8">
-        <div className="w-full max-w-2xl bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-8 md:p-12 rounded-3xl shadow-2xl">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-blue-700 text-center mb-8">
+        <div className="w-full max-w-2xl bg-white/50 p-8 md:p-12 rounded-3xl shadow-2xl">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-8">
             Feedback Form
           </h2>
 
           {submitted ? (
-            <div className="text-center text-green-600 text-xl font-semibold">
+            <div className="text-center text-gray-600 text-xl font-semibold">
               🎉 Thank you for your valuable feedback!
             </div>
           ) : (
@@ -78,7 +78,7 @@ export default function FeedbackForm() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-blue-700 font-medium mb-1"
+                  className="block text-gray-600 font-medium mb-1"
                 >
                   Name
                 </label>
@@ -96,7 +96,7 @@ export default function FeedbackForm() {
               <div>
                 <label
                   htmlFor="mail"
-                  className="block text-blue-700 font-medium mb-1"
+                  className="block text-gray-600 font-medium mb-1"
                 >
                 
                   Email
@@ -115,7 +115,7 @@ export default function FeedbackForm() {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-blue-700 font-medium mb-1"
+                  className="block text-gray-600 font-medium mb-1"
                 >
                   Bug Report
                 </label>

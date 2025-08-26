@@ -56,7 +56,6 @@ export async function PUT(req) {
   await dbconnect();
   try {
     const { minutes, email } = await req.json();
-    console.log(minutes, email)
     if (!minutes || !email) {
       return NextResponse.json({ message: "Credential missing!" }, { status: 400 });
     }
