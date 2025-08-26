@@ -137,7 +137,7 @@ export default function FeedbackForm() {
                   loading
                     ? "opacity-60 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                } text-gray-800 font-semibold py-3 rounded-xl transition-all`}
+                } text-white font-semibold py-3 rounded-xl transition-all`}
               >
                 {loading ? (
                   <FaSpinner className="animate-spin" />
