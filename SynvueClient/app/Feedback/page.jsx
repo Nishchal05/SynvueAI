@@ -60,9 +60,9 @@ export default function FeedbackForm() {
   };
 
   return (
-    <div className="flex min-h-screen bg-blue-50">
+    <div className="flex min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
       <Sidebar />
-      <main className="flex flex-col items-center justify-center w-full px-4 py-12 md:mt-8">
+      <main className="flex flex-col items-center justify-center w-full px-4 py-12 md:mt-8 ">
         <div className="w-full max-w-2xl bg-white/50 p-8 md:p-12 rounded-3xl shadow-2xl">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-8">
             Feedback Form
@@ -133,7 +133,7 @@ export default function FeedbackForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex justify-center items-center w-full bg-gradient-to-br from-indigo-300 via-purple-300 to-pink-300 ${
+                className={`flex justify-center items-center w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 ${
                   loading
                     ? "opacity-60 cursor-not-allowed"
                     : "hover:bg-blue-700"
