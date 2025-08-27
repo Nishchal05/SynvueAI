@@ -103,8 +103,9 @@ const ResumeAnalyzerPage = () => {
           alert("Please upload resume and enter job description");
           return;
         }
-        if(minutes<5){
-            toast("Minimum 5 Coins require!!");
+        if(minutes<0.5){
+            toast("Minimum 0.5 Coins require!!");
+            return;
         }
         const formData = new FormData();
         formData.append("resume", resumeFile);
