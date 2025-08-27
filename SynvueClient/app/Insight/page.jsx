@@ -64,7 +64,7 @@ const ResumeAnalyzerPage = () => {
         try {
           const response = await fetch(`/api/createuser?email=${user.user.primaryEmailAddress.emailAddress}`);
           const result = await response.json();
-          setminutes(result?.user?.minutes || 7);
+          setminutes(result?.user?.minutes);
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
