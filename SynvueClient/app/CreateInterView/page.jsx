@@ -17,15 +17,15 @@ const Page = () => {
   const { minutes, setinterviewduration, setminutes } = useContext(DataContext);
   const [useremail, setuseremail] = useState();
   const { user } = useUser();
+  console.log(user);
   const [formData, setFormData] = useState({
     jobPosition: "",
     description: "",
     duration: "",
     interviewType: "",
     useremail: user?.primaryEmailAddress?.emailAddress,
-    username: user?.fullName,
+    username: user?.fullName||user?.username,
   });
-  console.log(user?.primaryEmailAddress?.emailAddress);
   const userdata = async () => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
     try {

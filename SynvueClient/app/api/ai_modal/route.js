@@ -9,11 +9,23 @@ export async function POST(req) {
     await dbconnect();
     const { jobPosition, description, duration, interviewType, useremail, username } = await req.json();
 
-    if (!jobPosition || !description || !duration || !interviewType || !useremail || !username) {
+    if (!jobPosition || !description || !duration || !interviewType || !useremail) {
       return NextResponse.json({ error: "Missing input fields" }, { status: 400 });
     }
 
-    const prompt = `You are an expert interviewer. Based on the following inputs, generate a concise and high-quality list of interview questions: Job Title: {{jobTitle}} Job Description:{{jobDescription}} Interview Duration:{{duration}}Interview Type: {{type}}Your task:Analyze the job description to identify key responsibilities, required skills, and expected experience. Based on the interview duration, generate a time-optimized set of questions. For example, for a 4-minute interview, create only 5–6 concise and focused questions. Adjust the number and depth of questions appropriately for longer durations. Ensure the questions reflect the tone and structure of a real-life {{type}} interview.🧩 Format your response in RAW JSON only (no Markdown, no code block):{"interviewQuestions": [{"question": "...", "type": "Technical/Behavioral/Experience/Problem Solving/HR ROUND"}]}🎯 Goal: Create a structured, relevant, and time-balanced interview plan for the {{jobTitle}} role.`;
+    const prompt = `You are an expert interviewer. Based on the following inputs, generate a concise and high-quality list of interview questions: 
+Job Title: {{jobTitle}} 
+Job Description: {{jobDescription}} 
+Interview Duration: {{duration}} 
+Interview Type: {{type}} 
+Your task: 
+1. Analyze the job description to identify key responsibilities, required skills, and expected experience.  
+2. Based on the interview duration, generate exactly 2 × {{duration}} number of questions. For example, for a 5-minute interview, create 10 concise and focused questions.  
+3. Adjust the depth, sequencing, and mix of questions (technical, behavioral, problem-solving, HR, etc.) appropriately for the given interview type and duration.  
+4. Ensure the questions reflect the tone and structure of a real-life {{type}} interview.  
+🧩 Format your response in RAW JSON only (no Markdown, no code block):  
+{"interviewQuestions": [{"question": "...", "type": "Technical/Behavioral/Experience/Problem Solving/HR ROUND"}]}  
+🎯 Goal: Create a structured, relevant, and time-balanced interview plan for the {{jobTitle}} role.`;
     if (!prompt) {
       return NextResponse.json({ error: "Prompt not set in environment" }, { status: 500 });
     }
