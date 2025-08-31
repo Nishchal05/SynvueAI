@@ -24,7 +24,7 @@ const Page = () => {
     duration: "",
     interviewType: "",
     useremail: user?.primaryEmailAddress?.emailAddress,
-    username: user?.fullName||user?.username,
+    username: user?.fullName,
   });
   const userdata = async () => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
