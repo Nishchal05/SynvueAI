@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import Home from './_component/Home';
 import { useUser } from "@clerk/nextjs";
