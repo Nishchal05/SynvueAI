@@ -13,7 +13,11 @@ const SingleInterviewSchema = new mongoose.Schema({
 });
 
 const UserSchema = new mongoose.Schema({
-  name: String,
+  name: {
+  type: String,
+  default: 'Candidate',
+  set: (v) => v && v.trim() !== '' ? v : 'Candidate'
+},
   email: { type: String, unique: true },
   minutes:{type:Number,default: 15, min: 0},
   interviews: {
