@@ -1,10 +1,10 @@
 import React from 'react';
 import Home from './_component/Home';
-import { currentUser } from '@clerk/nextjs/server';
+import { useUser } from "@clerk/nextjs";
 import Sidebar from './_component/Sidebar';
 import Dashboard from './_component/Dashboard';
 const Page = async () => {
-const user = await currentUser();
+const user = useUser();
   return (
     <div className="h-100vh flex ">
       {!user ? (
