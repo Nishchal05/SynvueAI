@@ -63,8 +63,6 @@ const InterviewPage = () => {
       window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
     };
   }, []);
-
-  // Permission check on mount
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -151,11 +149,8 @@ const InterviewPage = () => {
 
     fetchInterviewData();
   }, [interviewId, email, isReady]);
-
-  // AI speaks
   useEffect(() => {
     if (!micStarted || !messages.length || !selectedVoice) return;
-  
     const latestMessage = messages[messages.length - 1];
     if (!latestMessage) return;
   
@@ -282,7 +277,7 @@ const InterviewPage = () => {
       if (response.ok) {
         setCallEnded(true);
         setcallendprocess(false);
-        router.push("/");
+        router.push("www.synvueai.in/");
       }
     } catch (error) {
       toast(error.message || "Error ending interview");
