@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const InterviewSuccessClient = ({ interviewId, email, jobPosition, duration }) => {
   const [copied, setCopied] = useState(false);
-  const link = `${process.env.NEXT_PUBLIC_BASE_URL}/interview?mail=${email}&id=${interviewId}`;
+  const link = `/interview?mail=${email}&id=${interviewId}`;
   const logoUrl = '/IntervueLogo.png';
   const handleCopy = () => {
     navigator.clipboard.writeText(link);
