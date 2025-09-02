@@ -277,7 +277,7 @@ const InterviewPage = () => {
       if (response.ok) {
         setCallEnded(true);
         setcallendprocess(false);
-        router.push("www.synvueai.in/");
+        router.push("/");
       }
     } catch (error) {
       toast(error.message || "Error ending interview");
