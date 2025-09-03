@@ -13,11 +13,20 @@ const Page = () => {
   const [loading, setloading] = useState(false);
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(33.33);
+  const [unsupported, setUnsupported] = useState(false);
   const [interviewid, setinterviewid] = useState();
   const { minutes, setinterviewduration, setminutes } = useContext(DataContext);
   const [useremail, setuseremail] = useState();
   const { user } = useUser();
-  console.log(user);
+  useEffect(() => {
+    const userAgent = navigator.userAgent;
+    const isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
+    const isEdge = /Edg/.test(userAgent);
+
+    if (!isChrome && !isEdge) {
+      setUnsupported(true);
+    }
+  }, []);
   const [formData, setFormData] = useState({
     jobPosition: "",
     description: "",
@@ -98,8 +107,10 @@ const Page = () => {
       console.error(error);
     }
   };
-
   return (
+    unsupported? <div className="fixed top-0 left-0 w-full bg-red-500 text-white p-3 text-center z-50">
+    ⚠️ SynvueAI currently supports only Chrome and Edge. Please switch your browser.
+  </div>:
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
       <main className="md:ml-64 mt-4 w-full p-6 flex justify-center items-start bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">

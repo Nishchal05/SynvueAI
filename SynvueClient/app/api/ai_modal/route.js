@@ -45,7 +45,6 @@ Your task:
     const result = await model.generateContent(finalprompt);
     const text = result.response.text();
 
-    // Parse the response
     let content = text.trim();
     if (content.startsWith("```json") || content.startsWith("```")) {
       content = content.replace(/```json|```/g, "").trim();
