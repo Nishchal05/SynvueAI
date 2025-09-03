@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React,{useState,useEffect} from "react";
 import Home from "./_component/Home";
 import { useUser } from "@clerk/nextjs";
 import Sidebar from "./_component/Sidebar";
@@ -8,10 +8,22 @@ import Dashboard from "./_component/Dashboard";
 import SynvueLogo from "./_component/synvueailoder";
 
 const Page = () => {
-  const { user, isLoaded } = useUser();
+  const { user} = useUser();
+  const [showLogo, setShowLogo] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLogo(false);
+    }, 3000);
 
-  if (!isLoaded) {
-    return <div className="flex items-center justify-center w-full h-screen"><SynvueLogo/></div>;
+    return () => {clearTimeout(timer)
+    };
+  }, []);
+  if (showLogo) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <SynvueLogo />
+      </div>
+    );
   }
 
   return (

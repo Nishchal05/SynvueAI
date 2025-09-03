@@ -26,8 +26,7 @@ const Dashboard = () => {
         once: true, 
       });
     }, []);
-    
-  const fetchUserData = async () => {
+    const fetchUserData = async () => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
     try {
       const createUserResponse = await fetch("/api/createuser", {
@@ -76,6 +75,7 @@ const Dashboard = () => {
   );
 
   return (
+    
     <div className="h-100vh w-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4 lg:p-6 pt-[60px]">
       <div className=" flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 mb-8" data-aos="fade-down">
         <div className="mb-4 sm:mb-0">
