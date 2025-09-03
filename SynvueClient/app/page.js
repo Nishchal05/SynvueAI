@@ -5,12 +5,13 @@ import Home from "./_component/Home";
 import { useUser } from "@clerk/nextjs";
 import Sidebar from "./_component/Sidebar";
 import Dashboard from "./_component/Dashboard";
+import SynvueLogo from "./_component/synvueailoder";
 
 const Page = () => {
   const { user, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return <div className="flex items-center justify-center w-full h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center w-full h-screen"><SynvueLogo/></div>;
   }
 
   return (
