@@ -10,6 +10,7 @@ import { FaLeftLong, FaRightLong, FaSpinner } from "react-icons/fa6";
 import { toast } from "sonner";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import SynvueLogo from "./synvueailoder";
 const Dashboard = () => {
   const { user } = useUser();
   const router = useRouter();
@@ -105,7 +106,7 @@ const Dashboard = () => {
                 toast(
                   <span className="flex items-center gap-2">
                     <FaSpinner className="animate-spin" />
-                    Loading...
+                    <SynvueLogo/>
                   </span>
                 );
                 return;

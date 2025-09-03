@@ -20,7 +20,7 @@ const Page = () => {
   }, []);
   if (showLogo) {
     return (
-      <div className="flex items-center justify-center w-full h-screen">
+      <div className="flex items-center justify-center w-screen h-screen">
         <SynvueLogo />
       </div>
     );
