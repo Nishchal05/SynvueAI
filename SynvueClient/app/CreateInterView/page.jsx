@@ -108,8 +108,17 @@ const Page = () => {
     }
   };
   return (
-    unsupported? <div className="fixed top-0 left-0 w-full bg-red-500 text-white p-3 text-center z-50">
-    ⚠️ SynvueAI currently supports only Chrome and Edge. Please switch your browser.
+    unsupported? <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[90%] md:w-[60%]">
+    <div className="bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in">
+      <span className="text-2xl">⚠️</span>
+      <div className="text-left">
+        <p className="font-semibold text-lg">Unsupported Browser</p>
+        <p className="text-sm opacity-90">
+          SynvueAI works best on <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.  
+          Please switch your browser for full functionality.
+        </p>
+      </div>
+    </div>
   </div>:
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
@@ -241,26 +250,6 @@ const Page = () => {
                       "Generate Link"
                     )}
                   </button>
-                </div>
-                <div className="bg-yellow-100 mt-5 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg max-w-xl mx-auto flex items-start gap-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 flex-shrink-0 mt-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-                  </svg>
-                  <div className="text-sm">
-                    <strong>⚠️ Note:</strong> Speech recognition might{" "}
-                    <span className="font-semibold">
-                      not work properly in Safari or Firefox.
-                    </span>
-                    <br />
-                    For best experience, use{" "}
-                    <span className="font-semibold">Google Chrome</span> or{" "}
-                    <span className="font-semibold">Microsoft Edge</span>.
-                  </div>
                 </div>
               </div>
             </div>
