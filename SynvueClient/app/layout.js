@@ -4,6 +4,7 @@ import "animate.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "./_component/Navbar";
+import { Analytics } from "@vercel/analytics/next"
 import DataProvider from "./DataProvider";
 <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>;
 const geistSans = Geist({
@@ -121,6 +122,7 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClerkProvider>
           <DataProvider>
+          <Analytics />
             <Navbar />
             {children}
           </DataProvider>
