@@ -115,10 +115,10 @@ const Wordmark = ({ size = 64 }) => (
     className="select-none leading-none font-semibold tracking-tight"
     style={{ fontSize: Math.max(14, size * 0.38) }}
   >
-    <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-400 dark:from-sky-400 dark:via-violet-400 dark:to-fuchsia-400">
-      Synvue
+    <span className="bg-clip-text text-blue-700 dark:text-blue">
+      SynvueAI
     </span>
-    <span className="text-slate-700 dark:text-slate-200">AI</span>
+
   </div>
 );
 

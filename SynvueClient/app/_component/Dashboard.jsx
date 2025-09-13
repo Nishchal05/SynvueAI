@@ -91,7 +91,6 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" data-aos="zoom-in">
-        {/* These cards are already responsive and remain unchanged */}
         <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition">
           <h3 className="text-lg sm:text-xl font-semibold text-indigo-700 mb-2 flex items-center gap-2">
             <FaMicrophoneAlt /> Create Interview
