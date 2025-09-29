@@ -116,7 +116,6 @@ const Wordmark = ({ size = 64 }) => (
     style={{ fontSize: Math.max(14, size * 0.38) }}
   >
     <span className="bg-clip-text text-blue-700 dark:text-blue">
-      SynvueAI
     </span>
 
   </div>
