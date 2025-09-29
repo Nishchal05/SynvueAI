@@ -40,9 +40,9 @@ const InterviewPage = () => {
   useEffect(() => {
     if (interviewState === "expired") {
       const timer = setTimeout(() => {
-        router.push('/');
+        router.push("/");
       }, 2000);
-  
+
       return () => clearTimeout(timer);
     }
   }, [interviewState, router]);
@@ -120,12 +120,14 @@ const InterviewPage = () => {
         const result = await response.json();
         if (result.interviewdetails.linkExpiry) {
           const now = new Date().getTime();
-          const expiryTime = new Date(result.interviewdetails.linkExpiry).getTime();
-  
+          const expiryTime = new Date(
+            result.interviewdetails.linkExpiry
+          ).getTime();
+
           if (now > expiryTime) {
             toast.error("This interview link has expired.");
             setInterviewState("expired");
-            return; 
+            return;
           }
         }
         if (result?.interviewdetails) {
@@ -153,10 +155,10 @@ const InterviewPage = () => {
     if (!micStarted || !messages.length || !selectedVoice) return;
     const latestMessage = messages[messages.length - 1];
     if (!latestMessage) return;
-  
+
     const utterance = new SpeechSynthesisUtterance(latestMessage);
     utterance.voice = selectedVoice;
-  
+
     utterance.onend = () => {
       setStartUserResponse(true);
     };
@@ -170,19 +172,16 @@ const InterviewPage = () => {
     }, 150);
   }, [messages, selectedVoice, micStarted]);
   const handleStartInterview = () => {
-      setMicStarted(true);
-  };  
+    setMicStarted(true);
+  };
 
   useEffect(() => {
-    if (!startUserResponse || recognitionRef.current || !micStarted) return;
+    if (!startUserResponse || !micStarted || recognitionRef.current) return;
 
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
-
     if (!SpeechRecognition) {
-      toast.error(
-        "Speech recognition not supported. Please use Chrome or Edge."
-      );
+      toast.error("Speech recognition not supported. Use Chrome or Edge.");
       return;
     }
 
@@ -191,42 +190,34 @@ const InterviewPage = () => {
     recognition.continuous = true;
     recognition.lang = "en-US";
 
-    recognition.onstart = () => {
-      setTranscript("");
-    };
+    recognition.onstart = () => setTranscript("");
 
     recognition.onresult = (event) => {
       const interimTranscript = Array.from(event.results)
-        .filter((result) => !result.isFinal)
-        .map((result) => result[0].transcript)
+        .filter((r) => !r.isFinal)
+        .map((r) => r[0].transcript)
         .join("");
 
       const finalTranscript = Array.from(event.results)
-        .filter((result) => result.isFinal)
-        .map((result) => result[0].transcript)
+        .filter((r) => r.isFinal)
+        .map((r) => r[0].transcript)
         .join("");
+
       setTranscript(interimTranscript || finalTranscript);
       if (finalTranscript) debounceSend(finalTranscript);
     };
+
     recognition.onerror = (event) => {
-      if (event.error === "audio-capture") {
-        toast.error(
-          "🎙️ Microphone not found or not accessible. Please check your mic permissions."
-        );
-      } else {
-        toast.error(`Mic Error: ${event.error}`);
-      }
+      toast.error(
+        event.error === "audio-capture"
+          ? "🎙️ Mic not found or accessible. Check permissions."
+          : `Mic Error: ${event.error}`
+      );
       setStartUserResponse(false);
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-        recognitionRef.current = null;
-      }
     };
 
     recognition.onend = () => {
-      if (startUserResponse && !callEnded) {
-        recognitionRef.current = null;
-      }
+      recognitionRef.current = null;
     };
 
     try {
@@ -285,7 +276,9 @@ const InterviewPage = () => {
   };
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const mins = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
     const secs = (seconds % 60).toString().padStart(2, "0");
     return `${mins}:${secs}`;
   };
@@ -313,14 +306,14 @@ const InterviewPage = () => {
       </div>
     );
   }
-  
+
   if (interviewState === "expired") {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center text-red-600">
         This interview link has expired. Please contact the organizer.
       </div>
     );
-  }  
+  }
   if (!micStarted) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center bg-gray-100">
@@ -328,12 +321,11 @@ const InterviewPage = () => {
           👋 Please click below to start the Interview
         </h2>
         <button
-  onClick={handleStartInterview}
-  className="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700"
->
-  Start Interview
-</button>
-
+          onClick={handleStartInterview}
+          className="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700"
+        >
+          Start Interview
+        </button>
       </div>
     );
   }
@@ -352,7 +344,9 @@ const InterviewPage = () => {
       <Sidebar />
       <main className="flex-1 flex flex-col p-4 relative md:ml-[270px] md:mt-[60px] ml-0 mt-[60px]">
         <div className="sticky top-0 z-10 bg-white shadow p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold text-blue-800">🎯Interview Session</h2>
+          <h2 className="text-2xl font-bold text-blue-800">
+            🎯Interview Session
+          </h2>
           <div className="text-sm md:text-base text-gray-700 bg-blue-100 px-4 py-2 rounded-full shadow">
             ⏳ Time Remaining:{" "}
             <span className="font-semibold">{formatTime(timeLeft)}</span>

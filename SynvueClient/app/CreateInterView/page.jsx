@@ -108,7 +108,7 @@ const Page = () => {
     }
   };
   return (
-    unsupported? <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[90%] md:w-[60%]">
+    unsupported? <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 w-[90%] md:w-[60%]">
     <div className="bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in">
       <span className="text-2xl">⚠️</span>
       <div className="text-left">
