@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
   set: (v) => v && v.trim() !== '' ? v : 'Candidate'
 },
   email: { type: String, unique: true },
-  minutes:{type:Number,default: 15, min: 0},
+  minutes:{type:Number,default: 45, min: 0},
   interviews: {
     totalCreated: { type: Number, default: 0 },
     interviewData: {
