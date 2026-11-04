@@ -195,7 +195,7 @@ const ResumeAnalyzerPage = () => {
                                     {...getRootProps()}
                                     className={`border-2 border-dashed border-slate-600 rounded-xl p-8 text-center cursor-pointer transition-colors duration-300 ${isDragActive ? 'bg-slate-700 border-cyan-400' : 'hover:bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100'}`}
                                 >
-                                    <input {...getInputProps()}  />
+                                   <input {...getInputProps({ "aria-label": "Upload resume PDF" })} />
                                     <div className="flex flex-col items-center justify-center text-slate-400">
                                         <UploadCloud className="w-12 h-12 mb-4 text-slate-500" />
                                         {isDragActive ? (
