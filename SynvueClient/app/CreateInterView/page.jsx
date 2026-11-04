@@ -128,7 +128,11 @@ const Page = () => {
             Create New Interview
           </h2>
 
-          <Progress value={progress} className="mb-6" />
+         <Progress
+  value={progress}
+  aria-label={`Create interview progress, step ${step} of 3`}
+  className="mb-6"
+/>
           {step === 1 && (
             <div className="space-y-5">
               <div>
